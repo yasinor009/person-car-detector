@@ -1,5 +1,11 @@
 # Person / car detection — 4.0 laptop preview
 
+New experimental multi-target ground-contact ranging: [فارسی: نصب و اجرا](docs/METRIC_RUNTIME_FA.md).
+Run `run_metric.py --help` and `evaluate_range.py --help`. The existing web API also
+supports this engine when both lens and ground calibration are configured.
+This requires a fixed calibrated camera and planar ground; it is not a validated
+handheld/100m metric-depth model. See [audit](docs/RD_AUDIT_100M_FA.md).
+
 **The requested >=90% precision AND recall for both classes, including measured
 >=150 m targets, has NOT been reached or certified.** See
 [ACCEPTANCE_STATUS.json](ACCEPTANCE_STATUS.json) and the actual benchmark results.

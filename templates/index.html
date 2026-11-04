@@ -204,12 +204,12 @@ function renderDetections(items) {
   if (!items || !items.length) { body.innerHTML='<tr><td class="empty" colspan="6">در این فریم هدفی گزارش نشده است.</td></tr>'; return; }
   body.innerHTML = items.map(d => {
     const bbox = d.bbox || [0,0,0,0], dist = d.distance || {};
-    const distance = d.distance_m == null ? 'نامشخص' : `${faNum(d.distance_m)} متر`;
+    const distance = d.distance_m == null ? 'نامشخص' : `${faNum(d.distance_m)} متر${dist.uncertainty_std_m == null ? '' : ' ± ' + faNum(dist.uncertainty_std_m) + ' (۱σ)'}`;
     const source = String(d.source || '').startsWith('visual_model') ? 'مدل انسان و خودرو' : d.source === 'motion' ? 'تشخیص حرکت' : d.source === 'thermal' ? 'ناهنجاری حرارتی' : (d.source === 'manual_roi' || d.source === 'selected_object') ? 'هدف انتخاب‌شده' : 'داده نمایشی';
     const className = d.class === 'person' ? 'انسان' : d.class === 'car' ? 'خودرو' : d.class === 'moving_object' ? 'جسم متحرک' : d.class === 'selected_object' ? 'هدف انتخاب‌شده' : (d.class || 'هدف');
     const score = d.source === 'motion' ? '—' : faNum(d.confidence);
     const status = dist.status === 'ok' ? 'محاسبه شد' : dist.status === 'target_width_not_set' ? 'عرض واقعی لازم است' : dist.status === 'camera_not_calibrated' ? 'کالیبراسیون لازم است' : (dist.status || 'نامشخص');
-    return `<tr><td>${escapeHtml(className)}</td><td>${source}</td><td>${score}</td><td>${faNum(bbox[2])}</td><td>${distance}</td><td>${escapeHtml(status)}</td></tr>`;
+    return `<tr><td>${escapeHtml(className)}${d.track_id == null ? '' : ' #' + escapeHtml(String(d.track_id))}</td><td>${source}</td><td>${score}</td><td>${faNum(bbox[2])}</td><td>${distance}</td><td>${escapeHtml(status)}</td></tr>`;
   }).join('');
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }

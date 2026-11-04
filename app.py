@@ -54,6 +54,16 @@ class DroneDistanceService:
         self.browser_frame_received_at = 0.0
         self.detector = detector or DroneDetector(model_path=model_path)
         self.rectifier = LensRectifier(os.getenv("CAMERA_LENS_CALIBRATION") or None)
+        from metric_range import GroundCalibration, RangeBank
+        self.metric_ranges = RangeBank()
+        ground_path = os.getenv("CAMERA_GROUND_CALIBRATION")
+        self.ground_calibration = GroundCalibration(**json.loads(Path(ground_path).read_text())) if ground_path else None
+        if self.ground_calibration:
+            if self.rectifier.calibration is None:
+                raise ValueError('Ground ranging requires CAMERA_LENS_CALIBRATION')
+            k, _, size = self.rectifier.calibration
+            if list(size) != self.ground_calibration.image_size or not np.allclose(k, self.ground_calibration.k):
+                raise ValueError('Ground and lens calibration must have identical K and resolution')
         # Generic motion segmentation complements the drone-only model. It finds moving regions,
         # not semantic classes such as person/car, and works best with a steady camera.
         self.motion_detector = MotionDetector()
@@ -875,6 +885,14 @@ class DroneDistanceService:
                     self._update_selected_distance()
         else:
             detections = []
+        if visible is not None and self.ground_calibration is not None:
+            detections = self.metric_ranges.update(detections, time.monotonic(), self.ground_calibration, visible.shape)
+            for item in detections:
+                item['distance']['status'] = item['distance']['reason']
+            if self.selected_target is not None:
+                match = next((d for d in detections if d.get('track_id') == self.selected_target.get('track_id')), None)
+                if match:
+                    self.selected_target.update(distance=match['distance'], distance_m=match['distance_m'])
         annotated_visible = self._annotate(visible, detections, source="visual") if visible is not None else None
         annotated_thermal = self._annotate(self.thermal_processor.enhance(thermal), thermal_detections, source="thermal") if thermal is not None else None
         with self.lock:
@@ -946,6 +964,7 @@ class DroneDistanceService:
     def _invalidate_live_observations(self):
         """Remove observations after stream failure; never retain a current range."""
         with self.lock:
+            self.metric_ranges.states.clear()
             self.latest_detections = []
             if self.latest_raw_visible is not None:
                 self.latest_visible = self.latest_raw_visible.copy()
