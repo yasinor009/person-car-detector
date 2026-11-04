@@ -1,0 +1,14 @@
+{
+  "test": "passed",
+  "tiles": 6,
+  "batches": 4,
+  "source": [
+    1280,
+    720
+  ],
+  "classes": [
+    "car",
+    "person",
+    "car"
+  ]
+}

@@ -1,0 +1,696 @@
+{
+  "name": "yolo26n_960",
+  "model": "/workspace/laptop-bench/yolo26n.pt",
+  "imgsz": 960,
+  "images": 64,
+  "mean_ms": 75.48168911215191,
+  "p95_ms": 101.8652670973097,
+  "thresholds": [
+    {
+      "confidence_threshold": 0.1,
+      "iou_threshold": 0.5,
+      "true_positives": 1204,
+      "false_positives": 514,
+      "false_negatives": 1955,
+      "precision": 0.7008,
+      "recall": 0.3811,
+      "f1": 0.4937,
+      "precision_percent": 70.08,
+      "recall_percent": 38.11,
+      "f1_percent": 49.37,
+      "false_positives_per_image": 8.0312,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.6787334881151947,
+        0.7220002379139592
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.1,
+          "iou_threshold": 0.5,
+          "true_positives": 333,
+          "false_positives": 140,
+          "false_negatives": 1224,
+          "precision": 0.704,
+          "recall": 0.2139,
+          "f1": 0.3281,
+          "precision_percent": 70.4,
+          "recall_percent": 21.39,
+          "f1_percent": 32.81,
+          "false_positives_per_image": 2.1875,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.6613676841149739,
+            0.7433788816209014
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.1,
+          "iou_threshold": 0.5,
+          "true_positives": 871,
+          "false_positives": 374,
+          "false_negatives": 731,
+          "precision": 0.6996,
+          "recall": 0.5437,
+          "f1": 0.6119,
+          "precision_percent": 69.96,
+          "recall_percent": 54.37,
+          "f1_percent": 61.19,
+          "false_positives_per_image": 5.8438,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 1,
+          "negative_image_false_alarm_rate": 0.5,
+          "negative_false_positives": 1,
+          "precision_wilson95": [
+            0.6735509977149801,
+            0.7244178079365935
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.2,
+      "iou_threshold": 0.5,
+      "true_positives": 961,
+      "false_positives": 257,
+      "false_negatives": 2198,
+      "precision": 0.789,
+      "recall": 0.3042,
+      "f1": 0.4391,
+      "precision_percent": 78.9,
+      "recall_percent": 30.42,
+      "f1_percent": 43.91,
+      "false_positives_per_image": 4.0156,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.7651930724354622,
+        0.8109863603158863
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.2,
+          "iou_threshold": 0.5,
+          "true_positives": 212,
+          "false_positives": 50,
+          "false_negatives": 1345,
+          "precision": 0.8092,
+          "recall": 0.1362,
+          "f1": 0.2331,
+          "precision_percent": 80.92,
+          "recall_percent": 13.62,
+          "f1_percent": 23.31,
+          "false_positives_per_image": 0.7812,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7572434128897787,
+            0.8521420256570853
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.2,
+          "iou_threshold": 0.5,
+          "true_positives": 749,
+          "false_positives": 207,
+          "false_negatives": 853,
+          "precision": 0.7835,
+          "recall": 0.4675,
+          "f1": 0.5856,
+          "precision_percent": 78.35,
+          "recall_percent": 46.75,
+          "f1_percent": 58.56,
+          "false_positives_per_image": 3.2344,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7562565605667747,
+            0.8084199443898764
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.25,
+      "iou_threshold": 0.5,
+      "true_positives": 873,
+      "false_positives": 208,
+      "false_negatives": 2286,
+      "precision": 0.8076,
+      "recall": 0.2764,
+      "f1": 0.4118,
+      "precision_percent": 80.76,
+      "recall_percent": 27.64,
+      "f1_percent": 41.18,
+      "false_positives_per_image": 3.25,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.7830133535815382,
+        0.8299793635119066
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.25,
+          "iou_threshold": 0.5,
+          "true_positives": 173,
+          "false_positives": 31,
+          "false_negatives": 1384,
+          "precision": 0.848,
+          "recall": 0.1111,
+          "f1": 0.1965,
+          "precision_percent": 84.8,
+          "recall_percent": 11.11,
+          "f1_percent": 19.65,
+          "false_positives_per_image": 0.4844,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7923792530958985,
+            0.8908333472689948
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.25,
+          "iou_threshold": 0.5,
+          "true_positives": 700,
+          "false_positives": 177,
+          "false_negatives": 902,
+          "precision": 0.7982,
+          "recall": 0.437,
+          "f1": 0.5647,
+          "precision_percent": 79.82,
+          "recall_percent": 43.7,
+          "f1_percent": 56.47,
+          "false_positives_per_image": 2.7656,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7703373480710196,
+            0.8234129925123497
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.35,
+      "iou_threshold": 0.5,
+      "true_positives": 714,
+      "false_positives": 149,
+      "false_negatives": 2445,
+      "precision": 0.8273,
+      "recall": 0.226,
+      "f1": 0.355,
+      "precision_percent": 82.73,
+      "recall_percent": 22.6,
+      "f1_percent": 35.5,
+      "false_positives_per_image": 2.3281,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.8006935637129388,
+        0.8510979515996627
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.35,
+          "iou_threshold": 0.5,
+          "true_positives": 107,
+          "false_positives": 14,
+          "false_negatives": 1450,
+          "precision": 0.8843,
+          "recall": 0.0687,
+          "f1": 0.1275,
+          "precision_percent": 88.43,
+          "recall_percent": 6.87,
+          "f1_percent": 12.75,
+          "false_positives_per_image": 0.2188,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8151285407808101,
+            0.929815452247155
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.35,
+          "iou_threshold": 0.5,
+          "true_positives": 607,
+          "false_positives": 135,
+          "false_negatives": 995,
+          "precision": 0.8181,
+          "recall": 0.3789,
+          "f1": 0.5179,
+          "precision_percent": 81.81,
+          "recall_percent": 37.89,
+          "f1_percent": 51.79,
+          "false_positives_per_image": 2.1094,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7886847464274658,
+            0.8441574012886175
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.45,
+      "iou_threshold": 0.5,
+      "true_positives": 587,
+      "false_positives": 101,
+      "false_negatives": 2572,
+      "precision": 0.8532,
+      "recall": 0.1858,
+      "f1": 0.3052,
+      "precision_percent": 85.32,
+      "recall_percent": 18.58,
+      "f1_percent": 30.52,
+      "false_positives_per_image": 1.5781,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.8247915854515548,
+        0.8776813505499808
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.45,
+          "iou_threshold": 0.5,
+          "true_positives": 71,
+          "false_positives": 7,
+          "false_negatives": 1486,
+          "precision": 0.9103,
+          "recall": 0.0456,
+          "f1": 0.0869,
+          "precision_percent": 91.03,
+          "recall_percent": 4.56,
+          "f1_percent": 8.69,
+          "false_positives_per_image": 0.1094,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8261508440896974,
+            0.955847552813589
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.45,
+          "iou_threshold": 0.5,
+          "true_positives": 516,
+          "false_positives": 94,
+          "false_negatives": 1086,
+          "precision": 0.8459,
+          "recall": 0.3221,
+          "f1": 0.4665,
+          "precision_percent": 84.59,
+          "recall_percent": 32.21,
+          "f1_percent": 46.65,
+          "false_positives_per_image": 1.4688,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8150930838917066,
+            0.8723806878435424
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.55,
+      "iou_threshold": 0.5,
+      "true_positives": 426,
+      "false_positives": 61,
+      "false_negatives": 2733,
+      "precision": 0.8747,
+      "recall": 0.1349,
+      "f1": 0.2337,
+      "precision_percent": 87.47,
+      "recall_percent": 13.49,
+      "f1_percent": 23.37,
+      "false_positives_per_image": 0.9531,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.8423801527379692,
+        0.9012405998632774
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.55,
+          "iou_threshold": 0.5,
+          "true_positives": 35,
+          "false_positives": 5,
+          "false_negatives": 1522,
+          "precision": 0.875,
+          "recall": 0.0225,
+          "f1": 0.0438,
+          "precision_percent": 87.5,
+          "recall_percent": 2.25,
+          "f1_percent": 4.38,
+          "false_positives_per_image": 0.0781,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7388757932976187,
+            0.9454058022645873
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.55,
+          "iou_threshold": 0.5,
+          "true_positives": 391,
+          "false_positives": 56,
+          "false_negatives": 1211,
+          "precision": 0.8747,
+          "recall": 0.2441,
+          "f1": 0.3816,
+          "precision_percent": 87.47,
+          "recall_percent": 24.41,
+          "f1_percent": 38.16,
+          "false_positives_per_image": 0.875,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8408034392679287,
+            0.902251327639118
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.65,
+      "iou_threshold": 0.5,
+      "true_positives": 276,
+      "false_positives": 29,
+      "false_negatives": 2883,
+      "precision": 0.9049,
+      "recall": 0.0874,
+      "f1": 0.1594,
+      "precision_percent": 90.49,
+      "recall_percent": 8.74,
+      "f1_percent": 15.94,
+      "false_positives_per_image": 0.4531,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.8667812969902714,
+        0.932981429274584
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.65,
+          "iou_threshold": 0.5,
+          "true_positives": 20,
+          "false_positives": 1,
+          "false_negatives": 1537,
+          "precision": 0.9524,
+          "recall": 0.0128,
+          "f1": 0.0253,
+          "precision_percent": 95.24,
+          "recall_percent": 1.28,
+          "f1_percent": 2.53,
+          "false_positives_per_image": 0.0156,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7733018341376452,
+            0.9915442305280766
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.65,
+          "iou_threshold": 0.5,
+          "true_positives": 256,
+          "false_positives": 28,
+          "false_negatives": 1346,
+          "precision": 0.9014,
+          "recall": 0.1598,
+          "f1": 0.2715,
+          "precision_percent": 90.14,
+          "recall_percent": 15.98,
+          "f1_percent": 27.15,
+          "false_positives_per_image": 0.4375,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8611972276045776,
+            0.9309050953397084
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.75,
+      "iou_threshold": 0.5,
+      "true_positives": 112,
+      "false_positives": 9,
+      "false_negatives": 3047,
+      "precision": 0.9256,
+      "recall": 0.0355,
+      "f1": 0.0683,
+      "precision_percent": 92.56,
+      "recall_percent": 3.55,
+      "f1_percent": 6.83,
+      "false_positives_per_image": 0.1406,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.8646677320152302,
+        0.9603777656393978
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.75,
+          "iou_threshold": 0.5,
+          "true_positives": 7,
+          "false_positives": 0,
+          "false_negatives": 1550,
+          "precision": 1.0,
+          "recall": 0.0045,
+          "f1": 0.009,
+          "precision_percent": 100.0,
+          "recall_percent": 0.45,
+          "f1_percent": 0.9,
+          "false_positives_per_image": 0.0,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.6456611570247934,
+            1.0
+          ]
+        },
+        "car": {
+          "confidence_threshold": 0.75,
+          "iou_threshold": 0.5,
+          "true_positives": 105,
+          "false_positives": 9,
+          "false_negatives": 1497,
+          "precision": 0.9211,
+          "recall": 0.0655,
+          "f1": 0.1224,
+          "precision_percent": 92.11,
+          "recall_percent": 6.55,
+          "f1_percent": 12.24,
+          "false_positives_per_image": 0.1406,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.8567410271260313,
+            0.9579118628550959
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.85,
+      "iou_threshold": 0.5,
+      "true_positives": 11,
+      "false_positives": 0,
+      "false_negatives": 3148,
+      "precision": 1.0,
+      "recall": 0.0035,
+      "f1": 0.0069,
+      "precision_percent": 100.0,
+      "recall_percent": 0.35,
+      "f1_percent": 0.69,
+      "false_positives_per_image": 0.0,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.7411599827511859,
+        1.0
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.85,
+          "iou_threshold": 0.5,
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 1557,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "precision_percent": 0.0,
+          "recall_percent": 0.0,
+          "f1_percent": 0.0,
+          "false_positives_per_image": 0.0,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": null
+        },
+        "car": {
+          "confidence_threshold": 0.85,
+          "iou_threshold": 0.5,
+          "true_positives": 11,
+          "false_positives": 0,
+          "false_negatives": 1591,
+          "precision": 1.0,
+          "recall": 0.0069,
+          "f1": 0.0136,
+          "precision_percent": 100.0,
+          "recall_percent": 0.69,
+          "f1_percent": 1.36,
+          "false_positives_per_image": 0.0,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.7411599827511859,
+            1.0
+          ]
+        }
+      }
+    },
+    {
+      "confidence_threshold": 0.9,
+      "iou_threshold": 0.5,
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 3158,
+      "precision": 1.0,
+      "recall": 0.0003,
+      "f1": 0.0006,
+      "precision_percent": 100.0,
+      "recall_percent": 0.03,
+      "f1_percent": 0.06,
+      "false_positives_per_image": 0.0,
+      "negative_images": 0,
+      "negative_images_with_false_positives": 0,
+      "negative_image_false_alarm_rate": null,
+      "negative_false_positives": 0,
+      "precision_wilson95": [
+        0.20654329147389294,
+        1.0
+      ],
+      "per_class": {
+        "person": {
+          "confidence_threshold": 0.9,
+          "iou_threshold": 0.5,
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 1557,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "precision_percent": 0.0,
+          "recall_percent": 0.0,
+          "f1_percent": 0.0,
+          "false_positives_per_image": 0.0,
+          "negative_images": 0,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": null,
+          "negative_false_positives": 0,
+          "precision_wilson95": null
+        },
+        "car": {
+          "confidence_threshold": 0.9,
+          "iou_threshold": 0.5,
+          "true_positives": 1,
+          "false_positives": 0,
+          "false_negatives": 1601,
+          "precision": 1.0,
+          "recall": 0.0006,
+          "f1": 0.0012,
+          "precision_percent": 100.0,
+          "recall_percent": 0.06,
+          "f1_percent": 0.12,
+          "false_positives_per_image": 0.0,
+          "negative_images": 2,
+          "negative_images_with_false_positives": 0,
+          "negative_image_false_alarm_rate": 0.0,
+          "negative_false_positives": 0,
+          "precision_wilson95": [
+            0.20654329147389294,
+            1.0
+          ]
+        }
+      }
+    }
+  ],
+  "manifest": {
+    "dataset": "VisDrone2019-DET-val",
+    "total_images": 548,
+    "selection": "64 uniform sorted indices, exploratory development subset, not held-out claim"
+  },
+  "scope": "Exploratory generic COCO model on aerial validation data; ignore-region filtering uses pred IOA>0.5; not official VisDrone AP; no measured distance labels",
+  "notes": [
+    "Development subset only; no measured range labels",
+    "Generic COCO and VisDrone-trained models use different domains; counts are not official full-dataset AP",
+    "Ignored-region IOA>0.5 suppression is applied after retaining matches to valid targets",
+    "Timing in exploratory runs may include concurrent CPU workloads; use the separate serial microbenchmark"
+  ]
+}

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/settings.json
+logs/*.log
+detections/*.jpg
+models/*.pt
+
+models/*.onnx
+models/*.pt

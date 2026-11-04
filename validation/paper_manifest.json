@@ -1,0 +1,128 @@
+{
+  "review_date": "2026-11-03",
+  "scope": "13 selected primary sources; targeted technical sections, not every page or all literature",
+  "sources": [
+    {
+      "name": "sort",
+      "arxiv": "1602.00763",
+      "url": "https://arxiv.org/pdf/1602.00763",
+      "status": "downloaded_and_extracted",
+      "bytes": 115276,
+      "sha256": "2c6b0845f8eeabac5a5b1279949e302a181d7d6c8078a10cc4560fba06717d3b",
+      "review_scope": "3.2-3.4; estimation, global association, track lifecycle"
+    },
+    {
+      "name": "ocsort",
+      "arxiv": "2203.14360",
+      "url": "https://arxiv.org/pdf/2203.14360",
+      "status": "downloaded_and_extracted",
+      "bytes": 17543790,
+      "sha256": "572fa9ed906c2082daf32566c39d2cd2e7d4bc57871591464445ea4226cd185d",
+      "review_scope": "3-4; occlusion drift, ORU and OCM (not implemented in full)"
+    },
+    {
+      "name": "botsort",
+      "arxiv": "2206.14651",
+      "url": "https://arxiv.org/pdf/2206.14651",
+      "status": "downloaded_and_extracted",
+      "bytes": 2800126,
+      "sha256": "4d6c8cdf0ee444dc886b5bc67b56cd11694d74d0e5e047718cd0311a5e5ed9b8",
+      "review_scope": "3.1-3.2 and 4.4; xywh state, camera motion and limitations"
+    },
+    {
+      "name": "sahi",
+      "arxiv": "2202.06934",
+      "url": "https://arxiv.org/pdf/2202.06934",
+      "status": "downloaded_and_extracted",
+      "bytes": 2183784,
+      "sha256": "66c9c5df29fa4c3ea3b410283bcb7aabd82255f096e551508ed929edda41dc49",
+      "review_scope": "slicing methodology and results section; overlapping patches + full inference"
+    },
+    {
+      "name": "depth_anything_v2",
+      "arxiv": "2406.09414",
+      "url": "https://arxiv.org/pdf/2406.09414",
+      "status": "downloaded_and_extracted",
+      "bytes": 47749421,
+      "sha256": "b156a023aa9a5e33bda60489962af809a67e748797d4357c790d063739fed2d7",
+      "review_scope": "7.3 and appendix D; metric fine-tuning and limitations"
+    },
+    {
+      "name": "depth_pro",
+      "arxiv": "2410.02073",
+      "url": "https://arxiv.org/pdf/2410.02073",
+      "status": "downloaded_and_extracted",
+      "bytes": 28020692,
+      "sha256": "1108db233e3082286a522961a869f1c24bbf0f7b967aa85dc346809c294ac9af",
+      "review_scope": "abstract, 3.1 network and 3.3 focal estimation; GPU runtime scope"
+    },
+    {
+      "name": "unidepth",
+      "arxiv": "2403.18913",
+      "url": "https://arxiv.org/pdf/2403.18913",
+      "status": "downloaded_and_extracted",
+      "bytes": 7881491,
+      "sha256": "1b14ce7174dabdf2dbc6c9b75ce2e893b02dfeb4321a9dd6f900e30c994595ba",
+      "review_scope": "3.1-3.2; 3D representation and camera prompting"
+    },
+    {
+      "name": "rtdetr",
+      "arxiv": "2304.08069",
+      "url": "https://arxiv.org/pdf/2304.08069",
+      "status": "downloaded_and_extracted",
+      "bytes": 2995096,
+      "sha256": "01018b33f15723f057b1b65c4ae6958e8cc99b75acf1ca434467c9f5f0782f15",
+      "review_scope": "end-to-end speed benchmark and hybrid encoder sections"
+    },
+    {
+      "name": "yolov10",
+      "arxiv": "2405.14458",
+      "url": "https://arxiv.org/pdf/2405.14458",
+      "status": "downloaded_and_extracted",
+      "bytes": 1345990,
+      "sha256": "db381148c9c2f5d8c45617e1ab05d581280963f44f84b358da2462fa84c2f36d",
+      "review_scope": "3.1 consistent dual assignment and model comparison"
+    },
+    {
+      "name": "focal_loss",
+      "arxiv": "1708.02002",
+      "url": "https://arxiv.org/pdf/1708.02002",
+      "status": "downloaded_and_extracted",
+      "bytes": 1297358,
+      "sha256": "2e6f45b97007009f32b82a3c19f35638d8da7022d8d4e4416b9078de91339f71",
+      "review_scope": "3.2 focal loss definition and hard/easy negative distinction"
+    },
+    {
+      "name": "giou",
+      "arxiv": "1902.09630",
+      "url": "https://arxiv.org/pdf/1902.09630",
+      "status": "downloaded_and_extracted",
+      "bytes": 4891828,
+      "sha256": "56fceedbbe952fd132eb75a6e6bc637028c365fa5a8c6b584e4020ddf01f291e",
+      "review_scope": "3; overlap metric and training loss"
+    },
+    {
+      "name": "bytetrack",
+      "arxiv": "2110.06864",
+      "url": "https://arxiv.org/pdf/2110.06864",
+      "status": "downloaded_and_extracted",
+      "bytes": 8638055,
+      "sha256": "772e647095359c8f0db537b04dd41c48e77c17edf83a6d17f7e22dadac0261ad",
+      "review_scope": "3, Algorithm 1; high/low score association and lost tracks"
+    },
+    {
+      "name": "zhang_calibration",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr98-71.pdf",
+      "status": "downloaded_and_extracted",
+      "bytes": 1014432,
+      "sha256": "b550996ade9c8cea7131a0be6059ce4ffd248e0f0562381abb94b76ca2d83bba",
+      "review_scope": "3.2-3.4 and 4; image-space residuals, distortion and degenerate poses"
+    }
+  ],
+  "unread_attempts": [
+    {
+      "name": "Huber 1964 original PDF",
+      "status": "HTML challenge returned; not read or counted"
+    }
+  ]
+}

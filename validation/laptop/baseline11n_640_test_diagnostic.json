@@ -1,0 +1,168 @@
+{
+  "name": "baseline11n_640",
+  "model": "/workspace/person_car_laptop_v4/models/person_car_yolo11n.onnx",
+  "thresholds": {
+    "person": 0.1,
+    "car": 0.1
+  },
+  "manifest": {
+    "dataset": "VisDrone2019-DET-test-dev",
+    "total_images": 1610,
+    "selection": "96 uniform sorted indices; fixed before inference",
+    "distance_labels": "not available"
+  },
+  "mean_ms": 148.51673146783165,
+  "p95_ms": 265.0052157478058,
+  "metrics": {
+    "confidence_threshold": 0.0,
+    "iou_threshold": 0.5,
+    "true_positives": 500,
+    "false_positives": 495,
+    "false_negatives": 3538,
+    "precision": 0.5025,
+    "recall": 0.1238,
+    "f1": 0.1987,
+    "precision_percent": 50.25,
+    "recall_percent": 12.38,
+    "f1_percent": 19.87,
+    "false_positives_per_image": 5.1562,
+    "negative_images": 0,
+    "negative_images_with_false_positives": 0,
+    "negative_image_false_alarm_rate": null,
+    "negative_false_positives": 0,
+    "precision_wilson95": [
+      0.4714950030908942,
+      0.5335107956263399
+    ],
+    "per_class": {
+      "person": {
+        "confidence_threshold": 0.0,
+        "iou_threshold": 0.5,
+        "true_positives": 112,
+        "false_positives": 86,
+        "false_negatives": 1915,
+        "precision": 0.5657,
+        "recall": 0.0553,
+        "f1": 0.1007,
+        "precision_percent": 56.57,
+        "recall_percent": 5.53,
+        "f1_percent": 10.07,
+        "false_positives_per_image": 0.8958,
+        "negative_images": 15,
+        "negative_images_with_false_positives": 1,
+        "negative_image_false_alarm_rate": 0.06666666666666667,
+        "negative_false_positives": 1,
+        "precision_wilson95": [
+          0.49601321230853446,
+          0.6328006694680665
+        ]
+      },
+      "car": {
+        "confidence_threshold": 0.0,
+        "iou_threshold": 0.5,
+        "true_positives": 388,
+        "false_positives": 409,
+        "false_negatives": 1623,
+        "precision": 0.4868,
+        "recall": 0.1929,
+        "f1": 0.2764,
+        "precision_percent": 48.68,
+        "recall_percent": 19.29,
+        "f1_percent": 27.64,
+        "false_positives_per_image": 4.2604,
+        "negative_images": 6,
+        "negative_images_with_false_positives": 2,
+        "negative_image_false_alarm_rate": 0.3333333333333333,
+        "negative_false_positives": 7,
+        "precision_wilson95": [
+          0.45227073683133096,
+          0.5215068491482185
+        ]
+      }
+    }
+  },
+  "acceptance": {
+    "passed": false,
+    "target_precision": 0.9,
+    "target_recall": 0.9,
+    "minimum_objects_per_class": 50,
+    "split": "test",
+    "general": {
+      "passed": false,
+      "classes": {
+        "person": {
+          "passed": false,
+          "precision": 0.5656565656565656,
+          "recall": 0.05525407005426739,
+          "objects": 2027,
+          "predictions": 198,
+          "precision_wilson95": [
+            0.49601321230853446,
+            0.6328006694680665
+          ]
+        },
+        "car": {
+          "passed": false,
+          "precision": 0.4868255959849435,
+          "recall": 0.19293883639980108,
+          "objects": 2011,
+          "predictions": 797,
+          "precision_wilson95": [
+            0.45227073683133096,
+            0.5215068491482185
+          ]
+        }
+      }
+    },
+    "long_range": {
+      "passed": false,
+      "reason": "no_independent_measured_150m_test_images"
+    },
+    "speed_passed": false,
+    "inference_fps": 6.733248100175148,
+    "minimum_inference_fps": 10.0,
+    "blockers": [
+      "Both precision and recall >=90% are not established for each class with sufficient objects",
+      "Both class targets at measured >=150m are not established",
+      "Measured inference throughput >= 10 FPS is not established"
+    ],
+    "scope": "Point metrics on this dataset only; inference FPS excludes capture/rendering; correlated data and domain shift may reduce generalization"
+  },
+  "limitations": "Public test-dev diagnostic subset; third-party model authors may have previously inspected test-dev. No measured >=150m labels. Not proof of user-camera performance or official full VisDrone AP.",
+  "recall_by_pixel_height": {
+    "person": {
+      "under_16px": {
+        "objects": 1009,
+        "matched": 0,
+        "recall": 0.0
+      },
+      "16_to_32px": {
+        "objects": 647,
+        "matched": 19,
+        "recall": 0.02936630602782071
+      },
+      "at_least_32px": {
+        "objects": 371,
+        "matched": 93,
+        "recall": 0.25067385444743934
+      }
+    },
+    "car": {
+      "under_16px": {
+        "objects": 533,
+        "matched": 4,
+        "recall": 0.0075046904315197
+      },
+      "16_to_32px": {
+        "objects": 658,
+        "matched": 79,
+        "recall": 0.12006079027355623
+      },
+      "at_least_32px": {
+        "objects": 820,
+        "matched": 305,
+        "recall": 0.3719512195121951
+      }
+    }
+  }
+}

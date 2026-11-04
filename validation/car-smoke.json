@@ -1,0 +1,20 @@
+{
+  "n": {
+    "classes": [
+      "car",
+      "person",
+      "car"
+    ],
+    "inference_ms": 86.87,
+    "count": 3
+  },
+  "s": {
+    "classes": [
+      "car",
+      "person",
+      "car"
+    ],
+    "inference_ms": 157.42,
+    "count": 3
+  }
+}
