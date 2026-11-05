@@ -1,4 +1,0 @@
-# Install a PyTorch build compatible with your NVIDIA driver/GPU first.
-ultralytics==8.4.201
-onnx>=1.17,<2
-PyYAML>=6
