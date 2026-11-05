@@ -17,12 +17,12 @@ wheel لینوکس قابل نصب مستقیم روی Android نیست. اجر�
 مدل قابل تهیه و دارای هش تأییدشده موجود:
 
 ```sh
-python download_optional_model.py
-python run_metric.py --source video.mp4 --model models/visdrone26m_1280.onnx --output observations.jsonl --show
+python download_models.py --profile mobile
+python run_metric.py --source video.mp4 --model models/person_car_yolo26n.onnx --output observations.jsonl --show
 ```
 
-مدل فوق aerial و بزرگ است؛ صرفاً مسیر قابل اجرای موجود، نه انتخاب نهایی گوشی یا
-مدل برنده دوربین زمینی. بدون کالیبراسیون همه فاصله‌ها null خواهند بود.
+مدل فوق عمومی COCO برای تصویر زمینی است. وانت/کامیون هم در خروجی car گروه‌بندی
+می‌شوند؛ سوییچ --passenger-cars-only آن‌ها را حذف می‌کند. بدون کالیبراسیون همه فاصله‌ها null خواهند بود.
 `--show` به محیط گرافیکی نیاز دارد؛ بدون آن خروجی JSONL headless تولید می‌شود.
 فایل ویدئو بدون حذف فریم پردازش می‌شود؛ timestamp=index/FPS برای ویدئوی CFR است.
 ویدئوی نرخ متغیر باید ابتدا با حفظ زمان‌بندی به CFR تبدیل شود.
@@ -43,7 +43,7 @@ camera_matrix و image_size همان فایل لنز و موارد زیر باش
 | fixed_camera / planar_ground | هر دو true فقط اگر در برداشت برقرارند |
 
 ```sh
-python run_metric.py --source video.mp4 --model models/visdrone26m_1280.onnx --lens data/lens.json --ground data/ground.json --output measured.jsonl --show
+python run_metric.py --source video.mp4 --model models/person_car_yolo26n.onnx --lens data/lens.json --ground data/ground.json --output measured.jsonl --show
 ```
 
 برای دوربین متصل source=0. اندازه ورودی باید دقیقاً برابر کالیبراسیون باشد؛

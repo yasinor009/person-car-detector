@@ -14,6 +14,8 @@ if not exist .venv\Scripts\python.exe (
 .venv\Scripts\python.exe -m pip install --upgrade pip
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 if errorlevel 1 exit /b 1
+.venv\Scripts\python.exe download_models.py --profile all
+if errorlevel 1 exit /b 1
 .venv\Scripts\python.exe verify_models.py
 if errorlevel 1 exit /b 1
 echo CPU installation complete. Run start_laptop.bat.

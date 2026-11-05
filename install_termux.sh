@@ -21,16 +21,16 @@ print('NumPy:', numpy.__version__)
 print('ONNX Runtime:', onnxruntime.__version__)
 PY
 
-echo "[3/3] Verifying bundled person/car ONNX models..."
-sha256sum -c models/SHA256SUMS
+echo "[3/3] Preparing mobile ground-camera model..."
+python download_models.py --profile mobile
 python - <<'CHECK'
-from drone_detector import DroneDetector
-model = DroneDetector()
+from laptop_detector import LaptopDetector
+model = LaptopDetector('models/person_car_yolo26n.onnx',imgsz=640,device='cpu',include_trucks=True)
 if model.model_status != 'ready':
     raise SystemExit(model.model_message)
 print(model.model_message)
 CHECK
 
 echo "Install complete. Start: python main.py --browser-camera"
-echo "Accuracy profile: python main.py --browser-camera --model models/person_car_yolo11s.onnx"
+echo "Long-range (slower): python main.py --browser-camera --profile long-range"
 echo "Open http://127.0.0.1:5000 on this phone and allow camera access."

@@ -22,7 +22,7 @@ ALIASES={'person':'person','pedestrian':'person','people':'person','human':'pers
 CANONICAL_IDS={'person':0,'car':2}
 
 
-def class_contract(names):
+def class_contract(names,include_trucks=False):
     if isinstance(names,str):
         try:names=json.loads(names)
         except json.JSONDecodeError:names=ast.literal_eval(names)
@@ -31,6 +31,8 @@ def class_contract(names):
     normalized={int(k):str(v).strip().lower().replace('_',' ') for k,v in names.items()}
     if set(normalized)!=set(range(len(normalized))):raise ValueError('Class IDs must be contiguous starting at zero')
     targets={i:ALIASES[name] for i,name in normalized.items() if name in ALIASES}
+    if include_trucks:
+        targets.update({i:'car' for i,name in normalized.items() if name in ('truck','pickup','pickup truck','van')})
     if set(targets.values())!={'person','car'}:raise ValueError('Model must explicitly contain both person and car classes')
     return normalized,targets
 
@@ -64,10 +66,11 @@ def canonical_nms(items,iou=.5,max_detections=500):
 class LaptopDetector:
     def __init__(self,model_path,confidence=.25,device='auto',imgsz=960,tiled=False,
                  tile_size=960,overlap=.25,max_tiles=24,batch_size=1,confirmation_frames=3,
-                 nms_iou=.5,onnx_layout='auto',class_thresholds=None):
+                 nms_iou=.5,onnx_layout='auto',class_thresholds=None,include_trucks=False):
         self.model_path=str(Path(model_path).resolve())
         self.confidence=float(confidence)
         self.class_thresholds=class_thresholds or {}
+        self.include_trucks=bool(include_trucks)
         self.device_requested=device
         self.device='cpu';self.provider=None;self.backend=None
         self.imgsz=int(imgsz);self.tiled_inference=bool(tiled)
@@ -140,7 +143,7 @@ class LaptopDetector:
                 raise ValueError('Unsupported EdgeFirst decoder contract')
             self.output_normalized=bool(outputs[0].get('normalized',False))
         names=metadata.get('names',metadata.get('labels'))
-        self.model_names,self.target_ids=class_contract(names)
+        self.model_names,self.target_ids=class_contract(names,self.include_trucks)
         if self.onnx_layout=='auto':self.onnx_layout='end2end' if metadata.get('end2end','').lower()=='true' else 'raw'
         probe=self.session.run(None,{self.input_name:np.zeros((1,3,self.input_height,self.input_width),dtype=self.dtype)})
         if len(probe)!=1:raise ValueError('Require one YOLO output tensor; RT-DETR multi-output models need a different decoder')
@@ -155,7 +158,7 @@ class LaptopDetector:
         if self.device_requested not in ('auto','cpu','cuda','cuda:0'):raise ValueError('Use auto, cpu or cuda:0')
         self.device='cuda:0' if self.device_requested!='cpu' and torch.cuda.is_available() else 'cpu'
         self.model=YOLO(self.model_path,task='detect')
-        self.model_names,self.target_ids=class_contract(self.model.names)
+        self.model_names,self.target_ids=class_contract(self.model.names,self.include_trucks)
         self.backend='pytorch';self.provider=self.device
         self.input_width=self.input_height=self.imgsz
         self.input_shape=[None,3,self.imgsz,self.imgsz]
@@ -306,7 +309,9 @@ class LaptopDetector:
                     output_shapes=self.output_shapes,input_layout='NCHW',decode_layout=self.onnx_layout,
                     confidence_threshold=self.confidence,effective_confidence_threshold=self.confidence,
                     class_thresholds={k:self.threshold(k) for k in CANONICAL_IDS},allowed_classes=['person','car'],
-                    model_class_names=self.model_names,tiled_inference=self.tiled_inference,tile_passes=self.last_tile_passes,
+                    model_class_names=self.model_names,include_trucks=self.include_trucks,
+                    vehicle_semantics='car_and_truck_van' if self.include_trucks else 'passenger_car_only',
+                    tiled_inference=self.tiled_inference,tile_passes=self.last_tile_passes,
                     batches=self.last_batches,inference_ms=self.inference_ms,inference_failures=self.inference_failures,
                     last_inference_error=self.last_inference_error,raw_candidates=self.last_raw_candidates,
                     decoded_candidates=self.last_decoded_count,last_detection_count=self.last_detection_count,

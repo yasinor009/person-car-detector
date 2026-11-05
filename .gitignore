@@ -9,3 +9,7 @@ models/*.pt
 
 models/*.onnx
 models/*.pt
+!models/person_car_yolo26n.onnx
+!models/person_car_yolo26s.onnx
+data/laptop_*.json
+models/*.download

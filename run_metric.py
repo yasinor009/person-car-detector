@@ -23,6 +23,7 @@ def main():
     p.add_argument('--imgsz', type=int, default=640)
     p.add_argument('--confidence', type=float, default=.25)
     p.add_argument('--tiled', action='store_true')
+    p.add_argument('--passenger-cars-only', action='store_true')
     p.add_argument('--show', action='store_true')
     p.add_argument('--max-frames', type=int, default=0)
     args = p.parse_args()
@@ -36,7 +37,7 @@ def main():
         if list(size) != calibration.image_size or not np.allclose(k, calibration.k):
             p.error('Ground and lens calibration must use identical K and resolution')
     detector = LaptopDetector(args.model, confidence=args.confidence, device=args.device,
-                              imgsz=args.imgsz, tiled=args.tiled)
+                              imgsz=args.imgsz, tiled=args.tiled, include_trucks=not args.passenger_cars_only)
     if detector.model_status != 'ready':
         raise SystemExit(detector.model_message)
     source = int(args.source) if args.source.isdigit() else args.source

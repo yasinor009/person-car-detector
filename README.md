@@ -12,24 +12,27 @@
 
 ```sh
 python -m pip install -r requirements.txt
-python download_optional_model.py
-python run_metric.py --source video.mp4 --model models/visdrone26m_1280.onnx --output observations.jsonl --show
+python download_models.py --profile mobile
+python run_metric.py --source video.mp4 --model models/person_car_yolo26n.onnx --output observations.jsonl --show
 ```
 
 `video.mp4` را با مسیر ویدئوی خود جایگزین کنید؛ برای دوربین محلی `--source 0`.
-مدل دانلودی بزرگ و آموزش‌دیده روی تصاویر هوایی است؛ انتخاب نهایی گوشی یا
-تضمین دقت در تصاویر زمینی نیست. وزن‌ها در Git نگهداری نمی‌شوند؛ دانلود این
-مدل با SHA-256 کنترل می‌شود. فایل خروجی موجود بازنویسی نمی‌شود.
+مدل پیش‌فرض عمومی COCO است، برای تصاویر معمولی زمینی؛ مدل هوایی از مسیر
+اجرا حذف شده است. دو وزن ONNX سبک/بزرگ‌تر همراه مخزن هستند و با SHA-256
+کنترل می‌شوند. فایل خروجی موجود بازنویسی نمی‌شود.
+در اجرای موبایل، وانت و کامیون نیز در گروه خروجی «خودرو» قرار می‌گیرند؛
+برای محدودکردن به سواری از `--passenger-cars-only` استفاده کنید.
 
 داشبورد محلی:
 
 ```sh
-python run_laptop.py --model models/visdrone26m_1280.onnx --device cpu
+python main.py --browser-camera
 ```
 
 نشانی: `http://127.0.0.1:5000`. برای فعال‌کردن فاصله چندهدف، راهنمای متریک را بخوانید.
-نصب‌کننده‌های قدیمی لپ‌تاپ/Termux به مدل‌های فهرست‌شده در `models/SHA256SUMS`
-نیاز دارند؛ clone به‌تنهایی آن مدل‌ها را ندارد.
+برای اهداف کوچک و دور: `python main.py --browser-camera --profile long-range`.
+این حالت مدل s، ورودی ۱۲۸۰ و برش تصویر را فعال می‌کند و روی گوشی کندتر است.
+تشخیص ۱۰۰ متر هنوز با داده واقعی گوشی تأیید نشده است.
 
 ## مستندات
 
@@ -39,7 +42,8 @@ python run_laptop.py --model models/visdrone26m_1280.onnx --device cpu
 - [آزمایش اجرای موتور متریک](docs/METRIC_TEST_REPORT.md)
 - [ممیزی معماری](docs/RD_AUDIT_100M_FA.md)
 - [پژوهش مدل‌ها](docs/LAPTOP_RESEARCH_FA.md) و [مقایسه تاریخی](docs/LAPTOP_EXPERIMENTS_FA.md)
-- [منشأ مدل‌ها](models/PROVENANCE_V4.json) و [مجوز وزن‌ها](models/ULTRALYTICS_LICENSE.txt)
+- [اصلاح تشخیص وانت و دوربین زمینی](docs/GROUND_DETECTION_FIX_FA.md)
+- [منشأ مدل‌های فعلی](models/GROUND_MODELS.json) و [مجوز وزن‌ها](models/ULTRALYTICS_LICENSE.txt)
 
 `ACCEPTANCE_STATUS.json` و ارزیاب لپ‌تاپ مربوط به معیار تاریخی ۱۵۰ مترند؛
 آن‌ها را با پذیرش فاصله‌سنجی ۱۰۰ متر یکی ندانید.

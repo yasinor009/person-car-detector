@@ -1,4 +1,14 @@
-# Laptop preview models
+# Current ground-camera models
+
+Current bundled weights: `person_car_yolo26n.onnx` (mobile/CPU) and
+`person_car_yolo26s.onnx` (balanced/long-range). Both are COCO pretrained,
+dynamic raw exports. Run `python verify_models.py` or
+`python download_models.py --profile all`. Runtime needs no PyTorch.
+Current provenance: `GROUND_MODELS.json`; current hashes: `SHA256SUMS`.
+Mobile output groups COCO car/truck as car; bus remains excluded.
+No custom Nissan training or 100m field acceptance is claimed.
+
+## Historical model descriptions (not bundled or current defaults)
 
 - `person_car_yolo26n.onnx`: COCO general detector, dynamic raw export; CPU profile uses 640px.
 - `person_car_yolo26s.onnx`: COCO general detector, dynamic raw export; balanced 960px, sliced long-range 1280px.
@@ -9,9 +19,8 @@ Only canonical person/car results are emitted. Internal class sets are COCO80 or
 VisDrone10, not a claim of custom two-class training. Published model quality does
 not certify >=90% precision/recall on the user's camera or detection at 150m.
 
-Exact hashes/sources/contracts: `PROVENANCE_V4.json`. Verify from project root with
-`python verify_models.py`. Optional larger aerial model:
-`python download_optional_model.py` (exact tested hash required).
+Historical hashes/sources/contracts: `PROVENANCE_V4.json`. The aerial downloader
+was removed because the target is a normal ground-level phone camera.
 
 Upstream Ultralytics-derived weights use AGPL-3.0 or an appropriate commercial
 license. See `ULTRALYTICS_LICENSE.txt` and upstream source/model cards. Publisher

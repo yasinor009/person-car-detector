@@ -30,6 +30,36 @@ def test_custom_two_class_and_visdrone_names_are_explicit():
     with pytest.raises(ValueError):class_contract({0:'person',3:'car'})
 
 
+def test_ground_vehicle_group_includes_pickup_label_but_not_bus(tmp_path):
+    names={0:'person',1:'bicycle',2:'car',3:'bus',4:'truck'}
+    assert class_contract(names)[1]=={0:'person',2:'car'}
+    mapping=class_contract(names,include_trucks=True)[1]
+    assert mapping=={0:'person',2:'car',4:'car'}
+    m=bare(tmp_path,names)
+    candidates=raw(m,[([100,100,60,100],{4:.8}),([300,100,60,100],{3:.95})])
+    assert m._decode_rows(candidates,640,640,(1,1,0,0))==[]
+    m.target_ids=mapping
+    output=m._decode_rows(candidates,640,640,(1,1,0,0))
+    assert len(output)==1
+    assert output[0]['class']=='car' and output[0]['class_id']==2
+    assert output[0]['model_class_id']==4
+
+
+def test_bundled_ground_models_contract_and_temporal_pickup(tmp_path):
+    # No network or image-specific accuracy assertion: export and decoder contract.
+    import hashlib
+    from download_models import MODELS
+    for filename, expected in MODELS.values():
+        path=Path(__file__).resolve().parents[1]/'models'/filename
+        if not path.exists():pytest.skip('Bundled weights unavailable')
+        assert hashlib.sha256(path.read_bytes()).hexdigest()==expected
+        m=LaptopDetector(path,device='cpu',imgsz=640,include_trucks=True)
+        assert m.model_status=='ready'
+        assert m.target_ids[7]=='car'
+        output=m.detect(np.zeros((640,640,3),np.uint8),temporal=False)
+        assert all(d['class'] in ('person','car') for d in output)
+
+
 def test_normalized_boxes_are_converted_only_by_explicit_contract(tmp_path):
     m=bare(tmp_path)
     a=raw(m,[([.5,.5,.2,.4],{0:.9})])
