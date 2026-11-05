@@ -1,40 +1,70 @@
-# Person / car detection — 4.0 laptop preview
+# تشخیص انسان و خودرو و تخمین فاصله
 
-New experimental multi-target ground-contact ranging: [فارسی: نصب و اجرا](docs/METRIC_RUNTIME_FA.md).
-Run `run_metric.py --help` and `evaluate_range.py --help`. The existing web API also
-supports this engine when both lens and ground calibration are configured.
-This requires a fixed calibrated camera and planar ground; it is not a validated
-handheld/100m metric-depth model. See [audit](docs/RD_AUDIT_100M_FA.md).
+پروژه Python برای تشخیص دو کلاس `person` و `car`، ردیابی مستقل اهداف و
+فاصله‌سنجی هندسی کالیبره‌شده.
 
-**The requested >=90% precision AND recall for both classes, including measured
->=150 m targets, has NOT been reached or certified.** See
-[ACCEPTANCE_STATUS.json](ACCEPTANCE_STATUS.json) and the actual benchmark results.
+**وضعیت: پژوهشی.** دقت ۱۰۰ متر و اجرای گوشی دستی تأیید نشده‌اند. فاصله‌سنجی
+چندهدف فعلی دوربین ثابت و زمین تخت کالیبره‌شده می‌خواهد؛ بدون کالیبراسیون فاصله null است.
 
-راهنمای کامل فارسی و نصب ویندوز/لینوکس: [README_LAPTOP_FA.md](README_LAPTOP_FA.md).
-نتایج واقعی: [LAPTOP_EXPERIMENTS_FA.md](LAPTOP_EXPERIMENTS_FA.md).
-مقالات، منابع و دلایل انتخاب: [LAPTOP_RESEARCH_FA.md](LAPTOP_RESEARCH_FA.md).
+## اجرای سریع
 
-Windows: run `install_laptop.bat`, then `start_laptop.bat`; open
-http://127.0.0.1:5000 in a browser on that laptop. NVIDIA setup is optional and
-requires a supported GPU/driver; use `install_nvidia.bat` only for NVIDIA.
+دستورها را از ریشه پروژه اجرا کنید. Python 3.11 یا 3.12 پیشنهاد می‌شود.
 
-Linux:
-```bash
-bash install_laptop.sh
-.venv/bin/python run_laptop.py --profile balanced
+```sh
+python -m pip install -r requirements.txt
+python download_optional_model.py
+python run_metric.py --source video.mp4 --model models/visdrone26m_1280.onnx --output observations.jsonl --show
 ```
 
-The new runtime preserves source resolution, supports CPU/CUDA ONNX and optional
-PyTorch inference, raw/end-to-end model contracts, class-name mappings for COCO,
-VisDrone and custom two-class exports, native-pixel overlapping slices, dynamic
-batching where exported, and a latest-frame camera queue. Only person/car results
-are emitted. Predicted/weak boxes are not shown as confirmed detections.
+`video.mp4` را با مسیر ویدئوی خود جایگزین کنید؛ برای دوربین محلی `--source 0`.
+مدل دانلودی بزرگ و آموزش‌دیده روی تصاویر هوایی است؛ انتخاب نهایی گوشی یا
+تضمین دقت در تصاویر زمینی نیست. وزن‌ها در Git نگهداری نمی‌شوند؛ دانلود این
+مدل با SHA-256 کنترل می‌شود. فایل خروجی موجود بازنویسی نمی‌شود.
 
-Bundled models: YOLO26n, YOLO26s, aerial-trained YOLO11s/1280, and the legacy
-YOLO11n for comparisons. A larger aerial YOLO26m is optional. These are published
-pretrained models, not weights trained on user footage in this session. Upstream
-model licensing and exact tested hashes are recorded in
-[models/PROVENANCE_V4.json](models/PROVENANCE_V4.json).
+داشبورد محلی:
 
-`main.py` and v3 documentation remain for legacy reference. For this laptop
-release use `run_laptop.py`; for the prior phone release use the separate v3.1 ZIP.
+```sh
+python run_laptop.py --model models/visdrone26m_1280.onnx --device cpu
+```
+
+نشانی: `http://127.0.0.1:5000`. برای فعال‌کردن فاصله چندهدف، راهنمای متریک را بخوانید.
+نصب‌کننده‌های قدیمی لپ‌تاپ/Termux به مدل‌های فهرست‌شده در `models/SHA256SUMS`
+نیاز دارند؛ clone به‌تنهایی آن مدل‌ها را ندارد.
+
+## مستندات
+
+- [فاصله‌سنجی، کالیبراسیون، Windows/Termux و ارزیابی](docs/METRIC_RUNTIME_FA.md)
+- [تنظیمات پیشرفته لپ‌تاپ و آموزش](docs/LAPTOP_GUIDE_FA.md)
+- [بازبینی و اصلاحات فاصله](docs/RANGE_DEBUG_REVIEW_FA.md)
+- [آزمایش اجرای موتور متریک](docs/METRIC_TEST_REPORT.md)
+- [ممیزی معماری](docs/RD_AUDIT_100M_FA.md)
+- [پژوهش مدل‌ها](docs/LAPTOP_RESEARCH_FA.md) و [مقایسه تاریخی](docs/LAPTOP_EXPERIMENTS_FA.md)
+- [منشأ مدل‌ها](models/PROVENANCE_V4.json) و [مجوز وزن‌ها](models/ULTRALYTICS_LICENSE.txt)
+
+`ACCEPTANCE_STATUS.json` و ارزیاب لپ‌تاپ مربوط به معیار تاریخی ۱۵۰ مترند؛
+آن‌ها را با پذیرش فاصله‌سنجی ۱۰۰ متر یکی ندانید.
+
+## ساختار
+
+| مسیر | کاربرد |
+|---|---|
+| `run_metric.py` / `run_laptop.py` / `main.py` | اجرای ویدئو، لپ‌تاپ و داشبورد |
+| `metric_range.py` / `distance_estimator.py` | فاصله چندهدف زمین و روش عرض معلوم |
+| `calibrate_*.py` / `camera_geometry.py` | کالیبراسیون و اصلاح لنز |
+| `evaluate_*.py` / `benchmark_*.py` | ارزیابی و آزمایش قابل تکرار |
+| `train_two_class.py` / `tune_laptop.py` | آموزش و انتخاب آستانه |
+| `templates/` | رابط مرورگر |
+| `tests/` | تست‌های نرم‌افزاری |
+| `docs/` | مستندات و گزارش‌های فعلی |
+| `validation/laptop/` | شواهد مقایسه مدل‌ها؛ داده آموزشی نیست |
+| `models/` | منشأ، مجوز و وزن‌های دانلودی محلی |
+
+## تست
+
+```sh
+python -m pip install -r requirements-test.txt
+python -m pytest -q
+```
+
+موفقیت تست نرم‌افزاری اثبات دقت میدانی نیست. گزارش‌های نسخه‌های قدیمی از
+شاخه جاری حذف شده‌اند و در تاریخچه Git قابل بازیابی‌اند.

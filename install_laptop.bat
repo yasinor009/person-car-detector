@@ -17,5 +17,5 @@ if errorlevel 1 exit /b 1
 .venv\Scripts\python.exe verify_models.py
 if errorlevel 1 exit /b 1
 echo CPU installation complete. Run start_laptop.bat.
-echo Optional NVIDIA GPU setup is documented in README_LAPTOP_FA.md.
+echo Optional NVIDIA GPU setup is documented in docs\LAPTOP_GUIDE_FA.md.
 pause

@@ -1,4 +1,4 @@
-"""Command-line entry point; see README_FA.md for setup and calibration instructions."""
+"""Dashboard entry point; see README.md and docs/METRIC_RUNTIME_FA.md."""
 from app import main
 
 if __name__ == "__main__":
