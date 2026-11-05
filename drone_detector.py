@@ -102,13 +102,13 @@ class DroneDetector:
 
     def _confirm(self, detections, now, shape):
         return self._tracker.update(detections, now, shape,
-                                    high_threshold=max(.55, self.confidence),
+                                    high_threshold=self.confidence,
                                     max_gap_seconds=max(1., 3*(self.inference_ms or 0)/1000))
 
     def _decode(self, output, frame_shape, scale_x, scale_y, left, top, score_floor=None):
         import numpy as np
         import cv2
-        floor = max(self.confidence,.55) if score_floor is None else float(score_floor)
+        floor = self.confidence if score_floor is None else float(score_floor)
         rows = self._to_rows(output)
         self.last_raw_candidates = len(rows)
         probs = rows[:,4:]
@@ -195,7 +195,9 @@ class DroneDetector:
         if frame is None or self.model_status != 'ready': return []
         start = time.perf_counter()
         try:
-            detections = self._detect_frame(frame, .25 if temporal else max(.55,self.confidence))
+            # Keep low-score observations for association; only the user threshold
+            # may create/confirm a visible track. Never impose a hidden .55 floor.
+            detections = self._detect_frame(frame, min(.25, self.confidence * .5) if temporal else self.confidence)
             now = time.monotonic()
             detections = self._confirm(detections,now,frame.shape) if temporal else detections
             self.last_inference_error = None
@@ -217,7 +219,7 @@ class DroneDetector:
                     inference_ms=self.inference_ms,last_inference_error=self.last_inference_error,
                     inference_failures=self.inference_failures,raw_candidates=self.last_raw_candidates,
                     decoded_candidates=self.last_decoded_count,last_detection_count=self.last_detection_count,
-                    confidence_threshold=self.confidence,effective_confidence_threshold=max(.55,self.confidence),
+                    confidence_threshold=self.confidence,effective_confidence_threshold=self.confidence,
                     drone_classes=['person','car'],allowed_classes=['person','car'],confirmation_frames=3,
                     tracker='xywh_kalman_hungarian_two_stage',
                     retained_tracks=len(self._tracks), weak_updates=self._tracker.last_weak_updates,

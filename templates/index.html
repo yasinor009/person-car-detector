@@ -67,7 +67,7 @@
         <p id="cameraMessage" class="status-text" style="margin-top:10px">دوربین هنوز فعال نشده است.</p>
         <div class="selected-target-box">
           <div class="selected-target-title">انتخاب جسم و دنبال‌کردن آن</div>
-          <p class="hint">برنامه فقط یک هدف را کادر می‌گیرد. برای اصلاح هدف، روی جسم بزن یا با انگشت دور کل جسم مستطیل بکش. فاصله برحسب متر فقط پس از کالیبراسیون معتبر و ثبت عرض واقعی همان جسم محاسبه می‌شود.</p>
+          <p class="hint">همه انسان‌ها و خودروهای تأییدشده کادر می‌گیرند. برای اندازه‌گیری فاصله، روی کادر هدف بزن. برای کالیبراسیون بدون تشخیص مدل، از «ثبت تصویر مرجع» در بخش کالیبراسیون استفاده کن.</p>
           <div id="selectedTargetInfo" class="selected-target-info">هنوز جسمی انتخاب نشده است.</div>
           <div class="form-grid" style="margin-top:10px">
             <div class="field"><label for="selectedTargetWidth">عرض واقعی جسم انتخاب‌شده (متر)</label><input id="selectedTargetWidth" type="number" min="0.001" step="0.001" placeholder="مثلاً 0.45"></div>
@@ -87,27 +87,33 @@
 
     <section class="card half">
       <h2>کالیبراسیون فاصله</h2>
-      <p class="sub">عرض پیکسلی از کادر جسم انتخاب‌شده خودکار خوانده می‌شود؛ دیگر لازم نیست پیکسل را دستی وارد کنی.</p>
+      <p class="sub">ابتدا عرض و فاصله واقعی مرجع را وارد کن. اگر مدل جسم را تشخیص نداده، تصویر مرجع را ثبت کن و دور تمام جسم روی همان تصویر ثابت کادر بکش.</p>
+      <button class="btn secondary" type="button" onclick="captureCalibrationReference()">ثبت تصویر مرجع از دوربین</button>
+      <button class="btn secondary" type="button" onclick="clearCalibrationReference()">استفاده از هدف تشخیص‌داده‌شده</button>
+      <canvas id="calibrationCanvas" hidden style="width:100%;height:auto;touch-action:none;margin-top:10px;border:1px solid #36d399" aria-label="روی تصویر ثابت دور تمام جسم مرجع کادر بکش"></canvas>
+      <p id="referenceMessage" class="hint">تصویر مرجع هنوز ثبت نشده است.</p>
       <form id="calForm" onsubmit="calibrate(event)">
         <div class="form-grid">
           <div class="field"><label for="knownWidth">عرض واقعی جسم مرجع (متر)</label><input id="knownWidth" type="number" min="0.001" step="0.001" value="0.30" required></div>
           <div class="field"><label for="knownDistance">فاصله واقعی جسم تا دوربین (متر)</label><input id="knownDistance" type="number" min="0.1" step="0.1" value="2" required></div>
         </div>
-        <div class="actions"><button class="btn" type="submit">کالیبراسیون خودکار از جسم انتخاب‌شده</button><button class="btn secondary" type="button" onclick="post('/api/calibration/reset',{})">حذف کالیبراسیون</button></div>
+        <div class="actions"><button class="btn" type="submit">ذخیره کالیبراسیون</button><button class="btn secondary" type="button" onclick="post('/api/calibration/reset',{})">حذف کالیبراسیون</button></div>
       </form>
       <p class="calibration-note">برای کالیبراسیون، یک جسم با عرض معلوم را در فاصله‌ای که با متر اندازه گرفته‌ای نگه دار. تمام هدف باید در تصویر و بدون پوشیدگی باشد. برای جسم جدید با عرض متفاوت، عرض واقعی همان جسم را ثبت کن؛ کالیبراسیون تک‌دوربینه خطای صفر را تضمین نمی‌کند.</p>
       <div id="calMessage" class="status-text" style="margin-top:12px">کالیبراسیون هنوز بررسی نشده است.</div>
+      <div id="calFeedback" class="status-text" role="status" style="white-space:pre-line"></div>
     </section>
 
     <section class="card half">
       <h2>تنظیمات تشخیص و هدف</h2>
       <form id="settingsForm" onsubmit="saveSettings(event)">
         <div class="form-grid">
-          <div class="field"><label for="confidence">حد آستانه اطمینان</label><input id="confidence" type="number" min="0.01" max="0.99" step="0.01" value="0.25" required></div>
+          <div class="field"><label for="confidence">حد آستانه اطمینان</label><input id="confidence" type="number" min="0.05" max="0.99" step="0.01" value="0.25" required></div>
+          <div class="field"><label for="tiledInference">برش برای اهداف کوچک (پردازش کندتر)</label><select id="tiledInference"><option value="false">خاموش</option><option value="true">فعال</option></select></div>
           <div class="field"><label for="targetWidth">عرض واقعی جسم هدف (متر)</label><input id="targetWidth" type="number" min="0.001" step="0.001" placeholder="مثلاً 0.35"></div>
           <div class="field" style="display:none"><label for="thermalEnabled">تحلیل حرارتی</label><select id="thermalEnabled"><option value="true">فعال</option><option value="false">غیرفعال</option></select></div>
         </div>
-        <div class="actions"><button class="btn" type="submit">ذخیره تنظیمات</button><button class="btn secondary" type="button" onclick="toggleAlarm()" id="alarmToggle">تغییر وضعیت هشدار</button></div>
+        <div class="actions"><button class="btn" type="submit">ذخیره تنظیمات</button><button class="btn secondary" type="button" onclick="applySensitiveDetection()">حساسیت بیشتر برای شب / هدف دور</button><button class="btn secondary" type="button" onclick="toggleAlarm()" id="alarmToggle">تغییر وضعیت هشدار</button></div>
       </form>
       <p class="hint">برای تخمین فاصله، این عرض باید متعلق به همان جسمی باشد که می‌خواهی فاصله‌اش را حساب کنی. مدل اندازهٔ واقعی هدف را نمی‌داند؛ عرض انسان‌ها و خودروها متفاوت است.</p>
       <div id="settingsMessage" class="status-text" style="margin-top:12px">تنظیمات هنوز بارگذاری نشده است.</div>
@@ -118,7 +124,7 @@
       <div style="overflow-x:auto">
         <table><thead><tr><th>کلاس</th><th>منبع</th><th>اطمینان / امتیاز</th><th>عرض کادر (px)</th><th>فاصله (متر)</th><th>وضعیت فاصله</th></tr></thead><tbody id="detectionsBody"><tr><td class="empty" colspan="6">هنوز داده‌ای ثبت نشده است.</td></tr></tbody></table>
       </div>
-      <p class="hint">«ناهنجاری حرارتی» فقط یک ناحیه گرم است و نباید به‌عنوان تشخیص قطعی پهپاد تفسیر شود.</p>
+      <p class="hint">کادر پس از تأیید در سه فریم نمایش داده می‌شود. آستانه کمتر حساسیت و احتمال خطای مثبت را افزایش می‌دهد. برش تصویر تا پنج استنتاج برای هر فریم نیاز دارد.</p>
     </section>
   </div>
   <footer>نسخه ۲.۸ · ردیابی خودکار یک هدف متحرک · فاصله متریک تقریبی و وابسته به کالیبراسیون است.</footer>
@@ -142,17 +148,70 @@ async function calibrate(event) {
   event.preventDefault();
   const body = {known_width_m:Number(document.getElementById('knownWidth').value), known_distance_m:Number(document.getElementById('knownDistance').value)};
   try {
-    const data = await api('/api/calibrate-selected', body);
-    let msg = `کالیبراسیون انجام شد · عرض پیکسلی خودکار: ${faNum(data.observed_width_px)} px · فاصله کانونی: ${faNum(data.focal_length_px)} px`;
+    if (calibrationImage && !calibrationBox) throw new Error('روی تصویر ثابت دور تمام جسم مرجع کادر بکش.');
+    const data = calibrationImage
+      ? await api('/api/calibrate', {...body, observed_width_px:calibrationBox[2], frame_width_px:calibrationImage.width})
+      : await api('/api/calibrate-selected', body);
+    let msg = `کالیبراسیون انجام شد · عرض پیکسلی: ${faNum(data.observed_width_px ?? calibrationBox?.[2])} px · فاصله کانونی: ${faNum(data.focal_length_px)} px`;
     if (data.quality_warning) msg += '\n' + data.quality_warning;
     await refreshStatus();
-    document.getElementById('calMessage').textContent = msg;
-    document.getElementById('calMessage').className='status-text ' + (data.quality_warning ? 'warntext' : 'good');
+    document.getElementById('calFeedback').textContent = msg;
+    document.getElementById('calFeedback').className='status-text ' + (data.quality_warning ? 'warntext' : 'good');
   } catch(e) {
-    document.getElementById('calMessage').textContent = 'خطا: ' + e.message;
-    document.getElementById('calMessage').className='status-text bad';
+    document.getElementById('calFeedback').textContent = 'خطا: ' + e.message;
+    document.getElementById('calFeedback').className='status-text bad';
   }
 }
+let calibrationImage = null, calibrationBox = null, calibrationDrag = null;
+function captureCalibrationReference() {
+  const video = document.getElementById('rearCameraPreview');
+  const msg = document.getElementById('referenceMessage');
+  if (!video.videoWidth || video.readyState < 2) { msg.textContent='ابتدا دوربین را فعال کن.'; return; }
+  calibrationImage = document.createElement('canvas');
+  const scale = Math.min(1,1280/Math.max(video.videoWidth,video.videoHeight));
+  calibrationImage.width = Math.round(video.videoWidth*scale);
+  calibrationImage.height = Math.round(video.videoHeight*scale);
+  calibrationImage.getContext('2d').drawImage(video,0,0,calibrationImage.width,calibrationImage.height);
+  calibrationBox=null;
+  const canvas=document.getElementById('calibrationCanvas');
+  canvas.width=calibrationImage.width; canvas.height=calibrationImage.height; canvas.hidden=false;
+  drawCalibrationReference();
+  msg.textContent='تصویر ثابت شد. دور تمام جسم با عرض معلوم کادر بکش، سپس ذخیره کالیبراسیون را بزن. این کادر فقط مرجع اندازه‌گیری است.';
+}
+function clearCalibrationReference() {
+  calibrationImage=null; calibrationBox=null; calibrationDrag=null;
+  document.getElementById('calibrationCanvas').hidden=true;
+  document.getElementById('referenceMessage').textContent='روی کادر انسان یا خودرو در تصویر زنده بزن، سپس ذخیره کالیبراسیون را بزن.';
+}
+function drawCalibrationReference() {
+  const canvas=document.getElementById('calibrationCanvas'), ctx=canvas.getContext('2d');
+  ctx.drawImage(calibrationImage,0,0);
+  if(calibrationBox) {ctx.strokeStyle='#22ff99';ctx.lineWidth=3;ctx.strokeRect(...calibrationBox);}
+}
+const calibrationCanvas=document.getElementById('calibrationCanvas');
+function calibrationPoint(event) {
+  const r=calibrationCanvas.getBoundingClientRect();
+  return {x:Math.max(0,Math.min(calibrationCanvas.width,(event.clientX-r.left)*calibrationCanvas.width/r.width)),
+          y:Math.max(0,Math.min(calibrationCanvas.height,(event.clientY-r.top)*calibrationCanvas.height/r.height))};
+}
+calibrationCanvas.addEventListener('pointerdown',event=>{
+  calibrationDrag=calibrationPoint(event);calibrationBox=null;calibrationCanvas.setPointerCapture(event.pointerId);
+});
+calibrationCanvas.addEventListener('pointermove',event=>{
+  if(!calibrationDrag)return;
+  const p=calibrationPoint(event),s=calibrationDrag;
+  calibrationBox=[Math.min(p.x,s.x),Math.min(p.y,s.y),Math.abs(p.x-s.x),Math.abs(p.y-s.y)];
+  drawCalibrationReference();
+});
+calibrationCanvas.addEventListener('pointerup',()=>{
+  calibrationDrag=null;
+  const b=calibrationBox;
+  if(!b || b[2]<12 || b[3]<12 || b[0]<=1 || b[1]<=1 || b[0]+b[2]>=calibrationCanvas.width-1 || b[1]+b[3]>=calibrationCanvas.height-1) {
+    calibrationBox=null;drawCalibrationReference();
+    document.getElementById('referenceMessage').textContent='کادر باید حداقل ۱۲ پیکسل باشد و تمام جسم با فاصله از لبه‌های تصویر دیده شود. دوباره کادر بکش.';
+  } else document.getElementById('referenceMessage').textContent=`عرض مرجع: ${b[2].toFixed(1)} پیکسل. عرض و فاصله واقعی همین جسم را وارد و ذخیره کن.`;
+});
+calibrationCanvas.addEventListener('pointercancel',()=>{calibrationDrag=null;calibrationBox=null;if(calibrationImage)drawCalibrationReference();});
 async function saveSelectedWidth() {
   const raw = document.getElementById('selectedTargetWidth').value;
   try {
@@ -190,9 +249,12 @@ async function selectTarget(payload) {
 async function saveSettings(event) {
   event.preventDefault();
   const rawWidth = document.getElementById('targetWidth').value;
-  const body = {confidence_threshold:Number(document.getElementById('confidence').value), target_width_m:rawWidth === '' ? null : Number(rawWidth), thermal_enabled:document.getElementById('thermalEnabled').value === 'true'};
+  const body = {confidence_threshold:Number(document.getElementById('confidence').value), tiled_inference:document.getElementById('tiledInference').value === 'true', target_width_m:rawWidth === '' ? null : Number(rawWidth), thermal_enabled:document.getElementById('thermalEnabled').value === 'true'};
   try { await api('/api/settings', body); document.getElementById('settingsMessage').textContent='تنظیمات ذخیره شد.'; document.getElementById('settingsMessage').className='status-text good'; await refreshStatus(); }
   catch(e) { document.getElementById('settingsMessage').textContent='خطا: '+e.message; document.getElementById('settingsMessage').className='status-text bad'; }
+}
+async function applySensitiveDetection() {
+  await post('/api/settings',{confidence_threshold:0.25,tiled_inference:true});
 }
 async function toggleAlarm() {
   try { const status = await api('/api/status'); await api('/api/alarm/enable', {enabled:!status.alarm.enabled}); await refreshStatus(); }
@@ -344,6 +406,7 @@ async function refreshStatus() {
     document.getElementById('mainMessage').textContent = warnings.length ? warnings.join('\n') : 'سامانه آماده است.';
     document.getElementById('mainMessage').className = 'status-text ' + (warnings.length ? 'warntext' : 'good');
     if (document.activeElement.id !== 'confidence') document.getElementById('confidence').value = s.settings.confidence_threshold;
+    if (document.activeElement.id !== 'tiledInference') document.getElementById('tiledInference').value = String(Boolean(d.tiled_inference));
     if (document.activeElement.id !== 'targetWidth') document.getElementById('targetWidth').value = s.settings.target_width_m ?? '';
     if (document.activeElement.id !== 'thermalEnabled') document.getElementById('thermalEnabled').value = String(s.settings.thermal_enabled);
     document.getElementById('alarmToggle').textContent = s.alarm.enabled ? 'غیرفعال‌کردن هشدار' : 'فعال‌کردن هشدار';
@@ -359,24 +422,28 @@ let rearCameraStream = null;
 let cameraCaptureActive = false;
 let frameUploadBusy = false;
 let lastCameraSendAt = 0;
+let cameraStartBusy = false;
 
 async function startRearCamera() {
+  if(cameraStartBusy || cameraCaptureActive) return;
+  cameraStartBusy=true;
   const message = document.getElementById('cameraMessage');
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     message.textContent = 'مرورگر دسترسی دوربین را پشتیبانی نمی‌کند. صفحه را با Chrome/Firefox و آدرس localhost باز کن.';
     message.className = 'status-text bad';
+    cameraStartBusy=false;
     return;
   }
   try {
     try {
       rearCameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: 'environment' }, width: { ideal: 3840 }, height: { ideal: 2160 } },
+        video: { facingMode: { exact: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
         audio: false
       });
     } catch (exactError) {
       // Some Android browsers do not accept exact constraints; retry while still preferring rear camera.
       rearCameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 3840 }, height: { ideal: 2160 } },
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
         audio: false
       });
     }
@@ -396,6 +463,8 @@ async function startRearCamera() {
     message.className = 'status-text bad';
     if (rearCameraStream) rearCameraStream.getTracks().forEach(track => track.stop());
     rearCameraStream = null;
+  } finally {
+    cameraStartBusy=false;
   }
 }
 
@@ -423,32 +492,40 @@ function captureRearCameraFrame() {
   const canvas = document.getElementById('frameCanvas');
   // Keep more source pixels for manual ROI tracking and range measurement. The
   // model still letterboxes to its own fixed input size in Python.
-  const scale = Math.min(1, 3840 / video.videoWidth);
+  const scale = Math.min(1, 1920 / Math.max(video.videoWidth,video.videoHeight));
   canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
   canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
   const context = canvas.getContext('2d', { alpha: false });
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
   frameUploadBusy = true;
   canvas.toBlob(async blob => {
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),10000);
     try {
+      if(!blob) throw new Error('مرورگر نتوانست تصویر JPEG بسازد.');
       if (blob && cameraCaptureActive) {
         const response = await fetch('/api/camera-frame', {
-          method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: blob, cache: 'no-store'
+          method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: blob, cache: 'no-store',signal:controller.signal
         });
-        if (!response.ok) throw new Error('سرور فریم را نپذیرفت (' + response.status + ')');
+        const result=await response.json();
+        if (!response.ok) throw new Error(result.error || 'سرور فریم را نپذیرفت (' + response.status + ')');
         lastCameraSendAt = Date.now();
+        const message=document.getElementById('cameraMessage');
+        message.textContent=`ارسال تصویر برقرار است · ${result.width}×${result.height} · منتظر پردازش و تأیید سه فریم بمان.`;
+        message.className='status-text good';
       }
     } catch (e) {
       const message = document.getElementById('cameraMessage');
       if (message) { message.textContent = 'ارسال تصویر ناموفق: ' + e.message; message.className = 'status-text bad'; }
     } finally {
+      clearTimeout(timeout);
       frameUploadBusy = false;
-      if (cameraCaptureActive) setTimeout(captureRearCameraFrame, 80);
+      if (cameraCaptureActive) setTimeout(captureRearCameraFrame, 200);
     }
   }, 'image/jpeg', 0.92);
 }
 
-refreshStatus(); setInterval(refreshStatus, 300);
+refreshStatus(); setInterval(refreshStatus, 1000);
 </script>
 </body>
 </html>

@@ -52,6 +52,7 @@ class DroneDistanceService:
         self.camera = camera or CameraInterface(visible_source, thermal_source)
         self.browser_frame = None
         self.browser_frame_received_at = 0.0
+        self.browser_frames_received = 0
         self.detector = detector or DroneDetector(model_path=model_path)
         self.rectifier = LensRectifier(os.getenv("CAMERA_LENS_CALIBRATION") or None)
         # Generic motion segmentation complements the person/car model. It finds moving regions,
@@ -116,6 +117,8 @@ class DroneDistanceService:
             self.detector.set_confidence(float(self.settings.get("confidence_threshold", config.CONFIDENCE_THRESHOLD)))
         except Exception:
             self.detector.set_confidence(config.CONFIDENCE_THRESHOLD)
+        if hasattr(self.detector, "tiled_inference"):
+            self.detector.tiled_inference = bool(self.settings.get("tiled_inference", self.detector.tiled_inference))
         self._save_settings()
 
     def _save_settings(self):
@@ -128,6 +131,7 @@ class DroneDistanceService:
             "thermal_enabled": bool(self.settings.get("thermal_enabled", True)),
             "alarm_enabled": bool(self.alarm.enabled),
             "model_decoder_version": 3,
+            "tiled_inference": bool(getattr(self.detector, "tiled_inference", False)),
         }
         tmp = config.SETTINGS_FILE.with_suffix(".tmp")
         tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -141,6 +145,11 @@ class DroneDistanceService:
             self.detector.set_confidence(float(data["confidence_threshold"]))
         if "target_width_m" in data:
             self.distance.set_target_width(data["target_width_m"])
+        if "tiled_inference" in data:
+            if not isinstance(data["tiled_inference"], bool):
+                raise ValueError("tiled_inference must be true or false.")
+            self.detector.tiled_inference = data["tiled_inference"]
+            self.detector.reset_tracking()
         if "thermal_enabled" in data:
             if not isinstance(data["thermal_enabled"], bool):
                 raise ValueError("thermal_enabled must be true or false.")
@@ -402,7 +411,7 @@ class DroneDistanceService:
             inside = bx <= px <= bx + bw and by <= py <= by + bh
             cx, cy = bx + bw / 2, by + bh / 2
             if not inside and (cx - px) ** 2 + (cy - py) ** 2 > max(55, min(width, height) * 0.10) ** 2:
-                raise ValueError("روی کادر رنگی هدف ضربه بزن، یا با کشیدن انگشت دور جسم کادر بکش.")
+                raise ValueError("روی کادر رنگی هدف ضربه بزن. برای کالیبراسیون دستی، «ثبت تصویر مرجع از دوربین» را بزن.")
             chosen = dict(first)
             chosen_bbox = self._clamp_bbox(chosen.get("bbox", (0, 0, 0, 0)), frame.shape)
         # A newly selected object may have a different physical width from the
@@ -941,6 +950,7 @@ class DroneDistanceService:
         with self.lock:
             self.browser_frame = frame
             self.browser_frame_received_at = time.time()
+            self.browser_frames_received += 1
         return {"width": int(frame.shape[1]), "height": int(frame.shape[0])}
 
     def _invalidate_live_observations(self):
@@ -1060,6 +1070,8 @@ class DroneDistanceService:
                 "visible_open": bool(self.browser_frame is not None and time.time() - self.browser_frame_received_at < 3.0),
                 "thermal_configured": False,
                 "thermal_open": False,
+                "frames_received": self.browser_frames_received,
+                "last_frame_age_s": round(time.time() - self.browser_frame_received_at, 1) if self.browser_frame_received_at else None,
             }
             mode = "browser_camera"
         else:

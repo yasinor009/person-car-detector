@@ -16,7 +16,7 @@ THERMAL_CAMERA_SOURCE = os.getenv("PERSON_CAR_THERMAL_SOURCE", os.getenv("DRONE_
 # COCO YOLO11 raw ONNX; decoder permits only person=0 and car=2.
 MODEL_PATH = os.getenv("PERSON_CAR_MODEL_PATH", os.getenv("DRONE_MODEL_PATH", str(BASE_DIR / "models" / "person_car_yolo11n.onnx")))
 TARGET_CLASS_NAMES = ("person", "car")
-CONFIDENCE_THRESHOLD = float(os.getenv("PERSON_CAR_CONFIDENCE", os.getenv("DRONE_CONFIDENCE", "0.60")))
+CONFIDENCE_THRESHOLD = float(os.getenv("PERSON_CAR_CONFIDENCE", os.getenv("DRONE_CONFIDENCE", "0.25")))
 # SAHI-style optional full image + four overlapping slices (up to 5 inferences).
 # Default off on phones. Enable only after measuring speed and false positives.
 PERSON_CAR_TILED_INFERENCE = os.getenv("PERSON_CAR_TILED", "0").strip().lower() in ("1", "true", "yes", "on")
