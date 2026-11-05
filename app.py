@@ -485,6 +485,22 @@ class DroneDistanceService:
             target = self.selected_target
             if target is None:
                 return
+            if self.ground_calibration is not None:
+                # Never replace a ground-contact range with the legacy width
+                # formula when the user changes selection/settings between frames.
+                match = next((d for d in self.latest_detections
+                              if d.get('track_id') == target.get('track_id')
+                              and d.get('class') == target.get('class')
+                              and d.get('distance', {}).get('method') == 'calibrated_ground_contact'), None)
+                if target.get('tracking_status') == 'tracking' and match:
+                    target.update(distance=dict(match['distance']), distance_m=match['distance_m'])
+                else:
+                    estimate = dict(target.get('distance', {}))
+                    estimate.update(distance_m=None, filtered_distance_m=None, valid=False,
+                                    quality='invalid', status='awaiting_fresh_ground_measurement',
+                                    reason='awaiting_fresh_ground_measurement', method='calibrated_ground_contact')
+                    target.update(distance=estimate, distance_m=None)
+                return
             width_px = float(target.get("bbox", (0, 0, 0, 0))[2])
             known_width = self.selected_target_width_m
             frame_width_px = self.latest_frame_size.get("width") if self.latest_frame_size else None

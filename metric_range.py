@@ -6,6 +6,8 @@ Returns distance to estimated ground contact, not the object's 3-D centre.
 """
 from dataclasses import dataclass
 import math
+import hashlib
+import json
 import numpy as np
 
 
@@ -38,8 +40,15 @@ class GroundCalibration:
             value = getattr(self, name)
             if not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f'{name} must be finite and positive')
-        if not self.calibration_id or self.fixed_camera is not True or self.planar_ground is not True:
+        if not isinstance(self.calibration_id, str) or not self.calibration_id.strip() or self.fixed_camera is not True or self.planar_ground is not True:
             raise ValueError('Ground ranging requires explicit fixed-camera and planar-ground assumptions')
+
+    def signature(self):
+        """Include numeric calibration, not only the operator's reusable label."""
+        values = [self.k.tolist(), self.n.tolist(), self.image_size, self.height_m,
+                  self.height_std_m, self.angle_std_deg, self.pixel_std,
+                  self.systematic_relative_std, self.calibration_id]
+        return hashlib.sha256(json.dumps(values, allow_nan=False).encode()).hexdigest()
 
     def measure(self, detection, shape):
         result = dict(raw_distance_m=None, filtered_distance_m=None, distance_m=None,
@@ -51,7 +60,10 @@ class GroundCalibration:
         # Do not guess whether a resolution change represents scaling or cropping.
         if [w, h] != self.image_size:
             return dict(result, reason='calibration_resolution_mismatch')
-        box = np.asarray(detection['bbox'], dtype=float)
+        try:
+            box = np.asarray(detection.get('bbox'), dtype=float)
+        except (TypeError, ValueError):
+            return result
         if box.shape != (4,) or not np.isfinite(box).all():
             return result
         x, y, bw, bh = box
@@ -68,13 +80,11 @@ class GroundCalibration:
         if denominator <= max(1e-6, 3*angular):
             return dict(result, reason='near_horizon_or_above_ground')
         distance = self.height_m / denominator
-        # Numerical Jacobian of range w.r.t. contact pixel coordinates.
-        def range_at(u, v):
-            r = np.linalg.solve(self.k, [u, v, 1.])
-            return self.height_m*np.linalg.norm(r)/(self.n @ r)
-        u, v = x+bw/2, y+bh
-        derivatives = np.array([(range_at(u+.01, v)-range_at(u-.01, v))/.02,
-                                (range_at(u, v+.01)-range_at(u, v-.01))/.02])
+        # Exact derivative of h*||ray||/(n.ray); works with skew and tilt too.
+        length = np.linalg.norm(ray)
+        dot = float(self.n @ ray)
+        gradient = self.height_m*(ray/(length*dot)-length*self.n/dot**2)
+        derivatives = gradient @ np.linalg.inv(self.k)[:, :2]
         random_std = max(.01, float(np.linalg.norm(derivatives)*self.pixel_std))
         systematic_std = math.sqrt((distance*self.height_std_m/self.height_m)**2
                                   + (distance*angular*math.sqrt(max(0, 1-denominator**2))/denominator)**2
@@ -96,10 +106,19 @@ class RangeBank:
         self.acceleration_std = acceleration_std
         self.max_gap_s = max_gap_s
         self.last_time = None
+        self.context = None
 
     def update(self, detections, timestamp, calibration, shape):
         if not math.isfinite(timestamp):
             raise ValueError('Timestamp must be finite')
+        context = (calibration.signature() if calibration else None, tuple(shape[:2]))
+        if context != self.context:
+            self.states.clear()
+            self.context = context
+        keys = [(d.get('track_id'), d.get('class')) for d in detections
+                if d.get('class') in ('person', 'car') and d.get('track_id') is not None]
+        if len(keys) != len(set(keys)):
+            raise ValueError('Duplicate track observations in one frame')
         if self.last_time is not None and timestamp <= self.last_time:
             self.states.clear()
         self.last_time = timestamp
@@ -114,7 +133,7 @@ class RangeBank:
                 method='none', calibration_status='missing', reason='calibration_required')
             key = (d.get('track_id'), d['class'], calibration.calibration_id if calibration else None)
             if key[0] is None:
-                measurement.update(valid=False, reason='missing_track_id')
+                measurement.update(valid=False, quality='invalid', reason='missing_track_id')
             if measurement['valid']:
                 z = measurement['raw_distance_m']
                 variance = measurement['random_std_m']**2

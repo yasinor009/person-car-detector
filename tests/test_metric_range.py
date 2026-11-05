@@ -69,3 +69,63 @@ def test_range_evaluator_counts_missing_and_exact_boundary():
     assert not report['accepted']
     with pytest.raises(ValueError):
         evaluate(dict(data, rows=rows+rows[:1]))
+
+
+def test_changed_calibration_with_same_label_resets_old_range():
+    bank = RangeBank()
+    c = calibration()
+    for i in range(20):
+        bank.update([detection()], i*.1, c, (720,1280,3))
+    updated = calibration(height_m=2.5)  # same human-readable calibration_id
+    result = bank.update([detection()], 2., updated, (720,1280,3))[0]['distance']
+    assert result['valid']
+    assert result['filtered_distance_m'] == pytest.approx(result['raw_distance_m'])
+
+
+def test_invalid_frame_geometry_clears_filter_and_duplicate_id_rejected():
+    bank, c = RangeBank(), calibration()
+    bank.update([detection()], 0., c, (720,1280,3))
+    bank.update([detection()], .1, c, (360,640,3))
+    assert not bank.states
+    with pytest.raises(ValueError, match='Duplicate'):
+        bank.update([detection(), detection()], .2, c, (720,1280,3))
+
+
+@pytest.mark.parametrize('box', [None, 'bad', [1,2], [1,2,float('nan'),4]])
+def test_bad_box_does_not_abort_other_targets(box):
+    result = RangeBank().update([dict(detection(), bbox=box), detection(2)], 0., calibration(), (720,1280,3))
+    assert not result[0]['distance']['valid']
+    assert result[1]['distance']['valid']
+
+
+@pytest.mark.parametrize('distance', [5,10,20,30,40,50,60,70,80,90,100])
+def test_analytic_range_and_pixel_uncertainty_at_requested_stations(distance):
+    c = calibration()
+    # Independently project the ground point (X=0,Y=height,Z>0) onto image.
+    z = math.sqrt(distance**2-c.height_m**2)
+    v = 360+1000*c.height_m/z
+    row = c.measure(detection(bottom=v), (720,1280,3))
+    assert row['raw_distance_m'] == pytest.approx(distance)
+    # Ground range sqrt(h²+(fy*h/(v-cy))²), exact vertical derivative.
+    derivative = (1000*c.height_m)**2/((v-360)**3*distance)
+    assert row['random_std_m'] == pytest.approx(max(.01, derivative*c.pixel_std))
+
+
+def test_selected_ground_range_survives_width_setting_and_invalidates_on_loss(tmp_path, monkeypatch):
+    import config
+    from app import DroneDistanceService
+    from drone_detector import DroneDetector
+    monkeypatch.setattr(config, 'SETTINGS_FILE', tmp_path/'settings.json')
+    service = DroneDistanceService(detector=DroneDetector(str(tmp_path/'missing.onnx')))
+    service.ground_calibration = calibration()
+    rows = RangeBank().update([detection()], 0., service.ground_calibration, (720,1280,3))
+    service.latest_detections = rows
+    service.selected_target = dict(rows[0], tracking_status='tracking')
+    expected = rows[0]['distance_m']
+    service.set_selected_target_width(9.)
+    assert service.selected_target['distance_m'] == expected
+    assert service.selected_target['distance']['method'] == 'calibrated_ground_contact'
+    service._invalidate_live_observations()
+    assert service.selected_target['distance_m'] is None
+    assert service.selected_target['distance']['valid'] is False
+    service.shutdown()
