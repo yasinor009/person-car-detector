@@ -9,7 +9,7 @@ from laptop_detector import LaptopDetector
 
 def main(argv=None):
     p=argparse.ArgumentParser(description='Person/car laptop detection; measured acceptance is separate from confidence')
-    p.add_argument('--profile',choices=('balanced','long-range','aerial','accuracy-aerial','cpu'),default='balanced')
+    p.add_argument('--profile',choices=('balanced','long-range','cpu'),default='balanced')
     p.add_argument('--model',default=None)
     p.add_argument('--device',choices=('auto','cpu','cuda:0'),default='auto')
     p.add_argument('--source',default='0',help='Camera index, RTSP URL or video path')
@@ -30,24 +30,22 @@ def main(argv=None):
     root=Path(__file__).resolve().parent
     defaults={'balanced':root/'models'/'person_car_yolo26s.onnx',
               'cpu':root/'models'/'person_car_yolo26n.onnx',
-              'long-range':root/'models'/'person_car_yolo26s.onnx',
-              'aerial':root/'models'/'visdrone11s_1280.onnx',
-              'accuracy-aerial':root/'models'/'visdrone26m_1280.onnx'}
+              'long-range':root/'models'/'person_car_yolo26s.onnx'}
     model=args.model or str(defaults[args.profile])
     thresholds=json.loads(Path(args.thresholds).read_text()) if args.thresholds else None
     if thresholds and 'class_thresholds' in thresholds:thresholds=thresholds['class_thresholds']
-    size=args.imgsz or (640 if args.profile=='cpu' else (1280 if args.profile in ('long-range','aerial','accuracy-aerial') else 960))
+    size=args.imgsz or (640 if args.profile=='cpu' else (1280 if args.profile=='long-range' else 960))
     detector=LaptopDetector(model,args.confidence,device='cpu' if args.profile=='cpu' else args.device,
-                            imgsz=size,tiled=args.profile in ('long-range','aerial','accuracy-aerial'),tile_size=args.tile_size,
+                            imgsz=size,tiled=args.profile=='long-range',tile_size=args.tile_size,
                             overlap=args.overlap,max_tiles=args.max_tiles,batch_size=args.batch,
                             confirmation_frames=args.confirm_frames,class_thresholds=thresholds)
     if detector.model_status!='ready':raise SystemExit(detector.model_message)
     print(detector.model_message)
     print('A high confidence threshold is not measured precision or recall.')
-    if detector.device=='cpu' and args.profile in ('long-range','aerial','accuracy-aerial'):
+    if detector.device=='cpu' and args.profile=='long-range':
         print('Long-range slicing on CPU may be slow; check measured frame latency in the dashboard.')
-    capture_width=args.capture_width or (3840 if args.profile in ('long-range','aerial','accuracy-aerial') else 1920)
-    capture_height=args.capture_height or (2160 if args.profile in ('long-range','aerial','accuracy-aerial') else 1080)
+    capture_width=args.capture_width or (3840 if args.profile=='long-range' else 1920)
+    capture_height=args.capture_height or (2160 if args.profile=='long-range' else 1080)
     config.CONFIDENCE_THRESHOLD=args.confidence
     config.MAX_FRAME_WIDTH=3840
     config.DETECTION_INTERVAL_SECONDS=0.0

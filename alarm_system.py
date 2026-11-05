@@ -41,9 +41,9 @@ class AlarmSystem:
                 return False
             self._last_trigger = now
             self._stop_event.clear()
-            self._thread = threading.Thread(target=self._play, name="drone-alarm", daemon=True)
+            self._thread = threading.Thread(target=self._play, name="person-car-alarm", daemon=True)
             self._thread.start()
-            self.logger.warning("Drone detection alarm triggered: %s", info or {})
+            self.logger.warning("Person/car detection alarm triggered: %s", info or {})
             return True
 
     def _play(self):

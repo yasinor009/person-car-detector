@@ -32,5 +32,5 @@ print(model.model_message)
 CHECK
 
 echo "Install complete. Start: python main.py --browser-camera"
-echo "Accuracy profile: python main.py --browser-camera --model models/person_car_yolo11s.onnx"
+echo "Tiled inference (slower): PERSON_CAR_TILED=1 python main.py --browser-camera"
 echo "Open http://127.0.0.1:5000 on this phone and allow camera access."

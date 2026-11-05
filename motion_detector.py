@@ -131,7 +131,7 @@ class MotionDetector:
             return []
         mask = cv2.medianBlur(mask, 5)
         # A 3x3 kernel preserves smaller targets in the 640px browser feed; a
-        # 5x5 opening often erased tiny drones or distant objects entirely.
+        # 5x5 opening often erased small or distant objects entirely.
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)

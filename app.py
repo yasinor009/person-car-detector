@@ -1,7 +1,7 @@
-"""Local web dashboard and processing service for drone detection and metric range estimation.
+"""Local dashboard for person/car detection, tracking, and metric range estimation.
 
 Run with: python main.py --demo
-The live mode uses a camera source configured by environment variables and a drone-trained model.
+Live mode uses the phone/browser camera or a configured video source.
 """
 from __future__ import annotations
 import argparse
@@ -30,7 +30,7 @@ from motion_detector import MotionDetector
 from thermal_processor import ThermalProcessor
 
 
-LOG = logging.getLogger("drone_distance")
+LOG = logging.getLogger("person_car_distance")
 
 
 def _load_json(path: Path, fallback: dict) -> dict:
@@ -54,7 +54,7 @@ class DroneDistanceService:
         self.browser_frame_received_at = 0.0
         self.detector = detector or DroneDetector(model_path=model_path)
         self.rectifier = LensRectifier(os.getenv("CAMERA_LENS_CALIBRATION") or None)
-        # Generic motion segmentation complements the drone-only model. It finds moving regions,
+        # Generic motion segmentation complements the person/car model. It finds moving regions,
         # not semantic classes such as person/car, and works best with a steady camera.
         self.motion_detector = MotionDetector()
         self.thermal_processor = ThermalProcessor()
@@ -690,7 +690,7 @@ class DroneDistanceService:
         if self._auto_candidate_streak < 2:
             return
 
-        # If a confirmed drone-model box overlaps this moving region, use its full
+        # If a confirmed detector box overlaps this moving region, use its full
         # semantic box instead of the smaller changed-pixel mask.
         chosen_box = chosen.get("bbox", (0, 0, 0, 0))
         best_visual = None
@@ -703,7 +703,7 @@ class DroneDistanceService:
                 best_visual, best_overlap = item, overlap
         if best_visual is not None and best_overlap >= 0.05:
             chosen_box = best_visual.get("bbox", chosen_box)
-            class_name = best_visual.get("class", "drone")
+            class_name = best_visual.get("class", "target")
             source = best_visual.get("source", "visual_model")
             confidence = best_visual.get("confidence", 1.0)
         else:
@@ -890,7 +890,7 @@ class DroneDistanceService:
                 and time.monotonic() - self._last_snapshot_at >= 10.0):
             try:
                 config.DETECTION_LOG_DIR.mkdir(parents=True, exist_ok=True)
-                filename = config.DETECTION_LOG_DIR / f"drone_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.jpg"
+                filename = config.DETECTION_LOG_DIR / f"detection_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.jpg"
                 if cv2.imwrite(str(filename), annotated_visible):
                     self._last_snapshot_at = time.monotonic()
             except Exception:
@@ -1077,7 +1077,7 @@ class DroneDistanceService:
         return {
             "ok": True,
             "mode": mode,
-            "demo_warning": "Synthetic data only; this mode does not detect real drones." if self.demo else None,
+            "demo_warning": "Synthetic data only; this mode does not process the real camera." if self.demo else None,
             "detection_running": running,
             "camera": camera_status,
             "detector": self.detector.get_stats(),
@@ -1149,7 +1149,7 @@ def make_handler(service: DroneDistanceService):
                 self.wfile.write(data)
                 return
             if path == "/health":
-                return self._json(200, {"ok": True, "service": "drone-distance", "version": "4.0-laptop-preview"})
+                return self._json(200, {"ok": True, "service": "person-car-distance", "version": "4.0"})
             if path == "/api/status":
                 return self._json(200, service.status())
             if path in ("/video/visible", "/video/thermal"):
@@ -1257,7 +1257,7 @@ def run_server(host=None, port=None, demo=False, visible_source=None, thermal_so
     LOG.info("Dashboard listening on http://%s:%s (mode=%s)", host, port, mode)
     print(f"Dashboard: http://{host}:{port}")
     if demo:
-        print("DEMO MODE: synthetic target only; no real drone detection is performed.")
+        print("DEMO MODE: synthetic target only; the real camera is not processed.")
     if browser_camera:
         print("BROWSER CAMERA MODE: open the dashboard in your phone browser and allow rear-camera access.")
     try:
@@ -1272,7 +1272,7 @@ def run_server(host=None, port=None, demo=False, visible_source=None, thermal_so
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Drone detection and calibrated distance estimation dashboard")
+    parser = argparse.ArgumentParser(description="Person/car detection and calibrated distance estimation dashboard")
     parser.add_argument("--demo", action="store_true", help="Run a synthetic demo without camera/model hardware")
     parser.add_argument("--browser-camera", action="store_true", help="Use the phone browser's rear camera instead of cv2.VideoCapture")
     parser.add_argument("--host", default=config.WEB_HOST, help="Must be localhost for the built-in server")

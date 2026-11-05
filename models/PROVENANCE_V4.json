@@ -36,15 +36,6 @@
       "license": "AGPL-3.0 or appropriate upstream commercial license"
     },
     {
-      "file": "visdrone11s_1280.onnx",
-      "source": "https://huggingface.co/numanbekir/visdrone-yolo11s/resolve/main/yolo11s_1280.onnx",
-      "sha256": "16b0a95fd4ca819b23803b647854f16bbc52c6b2e23bdd9d5804eb8f9c47e2ea",
-      "bytes": 38446610,
-      "classes": "VisDrone10",
-      "contract": "raw, static batch-one 1280; class IDs 0/1 -> person, 3 -> car",
-      "license": "AGPL-3.0 or appropriate upstream commercial license"
-    },
-    {
       "file": "person_car_yolo11n.onnx",
       "source": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11n.pt",
       "sha256": "5c58e6ece5c4ec4ca0ca4825b55feb885df7a6caff0d7177ab0d0d3735ae6999",
@@ -53,13 +44,5 @@
       "contract": "Legacy v3 comparison/default main.py, static 640",
       "license": "AGPL-3.0 or appropriate upstream commercial license"
     }
-  ],
-  "optional": {
-    "file": "visdrone26m_1280.onnx",
-    "source": "https://huggingface.co/EdgeFirst/visdrone-yolo26-det/resolve/main/1280/onnx/visdrone-yolo26m-det-fp32-1280.onnx",
-    "sha256": "2b02c222c8dc19e036958d3655d827948e6f06b02c00f1146a88d7a57faba794",
-    "bytes": 82348602,
-    "license": "Upstream model weights AGPL-3.0; publisher model card and validation material have separate CC BY-NC terms; see linked source",
-    "contract": "Raw normalized xywh, metadata labels VisDrone10, normalized coordinates explicitly decoded"
-  }
+  ]
 }

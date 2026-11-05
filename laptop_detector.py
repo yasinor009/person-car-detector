@@ -1,6 +1,6 @@
 """Laptop detector: CUDA-aware ONNX/PyTorch, explicit class contracts, native-pixel slices.
 
-Pretrained COCO and VisDrone names map to canonical person/car. A custom model
+Pretrained COCO and compatible dataset names map to canonical person/car. A custom model
 must declare both targets in metadata. No guessed class-ID mappings are used.
 """
 from __future__ import annotations
@@ -214,7 +214,7 @@ class LaptopDetector:
             xyxy[:,[1,3]]*=self.input_height
         sx,sy,left,top=transform
         xyxy[:,[0,2]]=(xyxy[:,[0,2]]-left)/sx;xyxy[:,[1,3]]=(xyxy[:,[1,3]]-top)/sy
-        # Vectorize clipping/filtering; dense aerial scenes can have thousands
+        # Vectorize clipping/filtering; dense scenes can have thousands
         # of candidates and per-box np.clip calls waste CPU time.
         truncated=(xyxy[:,0]<=1)|(xyxy[:,1]<=1)|(xyxy[:,2]>=frame_w-1)|(xyxy[:,3]>=frame_h-1)
         xyxy[:,[0,2]]=np.clip(xyxy[:,[0,2]],0,frame_w)

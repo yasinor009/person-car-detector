@@ -54,7 +54,7 @@ class CameraInterface:
             visible_ok = self.visible_cap is not None
             thermal_ok = self.thermal_cap is not None
             if not visible_ok and not thermal_ok:
-                self.logger.error("No camera source opened. Check DRONE_VISIBLE_SOURCE / DRONE_THERMAL_SOURCE.")
+                self.logger.error("No camera source opened. Check PERSON_CAR_VISIBLE_SOURCE / PERSON_CAR_THERMAL_SOURCE.")
                 return False
             self.logger.info("Camera sources opened: visible=%s thermal=%s", visible_ok, thermal_ok)
             return True

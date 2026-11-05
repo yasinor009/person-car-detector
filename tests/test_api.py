@@ -40,7 +40,7 @@ def request_json(base, path, method="GET", payload=None):
 def test_health_and_dashboard_routes(running_demo_server):
     _, base = running_demo_server
     status, health = request_json(base, "/health")
-    assert status == 200 and health["ok"] is True and health["version"] == "4.0-laptop-preview"
+    assert status == 200 and health["ok"] is True and health["version"] == "4.0"
     # The dashboard is HTML, so inspect it separately.
     with urlopen(base + "/") as response:
         assert response.status == 200

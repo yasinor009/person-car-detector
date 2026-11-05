@@ -33,7 +33,7 @@ class ThermalProcessor:
         return cv2.applyColorMap(clahe.apply(normalized), cv2.COLORMAP_INFERNO)
 
     def detect_hot_objects(self, frame):
-        """Return heat/anomaly candidates. These are NOT classified as drones."""
+        """Return heat/anomaly candidates; these are not person/car classifications."""
         gray = self.preprocess(frame)
         if gray is None or gray.size == 0:
             return []
@@ -62,7 +62,7 @@ class ThermalProcessor:
             if not config.THERMAL_MIN_ASPECT_RATIO <= aspect <= config.THERMAL_MAX_ASPECT_RATIO:
                 continue
             roi = gray[y:y + bh, x:x + bw]
-            # Confidence is an anomaly score, not a probability that this is a drone.
+            # Confidence is an anomaly score, not a person/car probability.
             anomaly = max(0.0, (float(np.mean(roi)) - mean) / max(std, 1e-6))
             confidence = min(0.99, anomaly / 4.0)
             results.append({
@@ -72,6 +72,6 @@ class ThermalProcessor:
                 "source": "thermal",
                 "area_px": round(area, 1),
                 "mean_intensity": round(float(np.mean(roi)), 1),
-                "classification_note": "Thermal anomaly only; not confirmed as a drone.",
+                "classification_note": "Thermal anomaly only; not confirmed as person or car.",
             })
         return sorted(results, key=lambda item: item["confidence"], reverse=True)
