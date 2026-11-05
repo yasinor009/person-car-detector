@@ -1,0 +1,74 @@
+{
+  "scope": "Synthetic software ablation only; not measured field accuracy or phone performance",
+  "tracking": {
+    "scenario": "one short occlusion after initial confirmation",
+    "frames": [
+      {
+        "frame": 1,
+        "has_observation": true,
+        "baseline_ids": [],
+        "upgraded_ids": []
+      },
+      {
+        "frame": 2,
+        "has_observation": true,
+        "baseline_ids": [],
+        "upgraded_ids": []
+      },
+      {
+        "frame": 3,
+        "has_observation": true,
+        "baseline_ids": [
+          1
+        ],
+        "upgraded_ids": [
+          1
+        ]
+      },
+      {
+        "frame": 4,
+        "has_observation": false,
+        "baseline_ids": [],
+        "upgraded_ids": []
+      },
+      {
+        "frame": 5,
+        "has_observation": true,
+        "baseline_ids": [],
+        "upgraded_ids": [
+          1
+        ]
+      },
+      {
+        "frame": 6,
+        "has_observation": true,
+        "baseline_ids": [],
+        "upgraded_ids": [
+          1
+        ]
+      },
+      {
+        "frame": 7,
+        "has_observation": true,
+        "baseline_ids": [
+          2
+        ],
+        "upgraded_ids": [
+          1
+        ]
+      }
+    ],
+    "baseline_visible_identity_count": 2,
+    "upgraded_visible_identity_count": 1,
+    "ghost_boxes_on_missing_frame": 0
+  },
+  "calibration": {
+    "trials": 250,
+    "paired_accepted_trials": 230,
+    "baseline_rejected": 20,
+    "upgraded_rejected": 20,
+    "baseline_mean_abs_relative_focal_error": 0.009114841792328415,
+    "upgraded_mean_abs_relative_focal_error": 0.00521907790958633,
+    "assumptions": "True focal=900px, width=.5m, exact known ranges [2,3,4,6,9,12,15,20,25]m; independent Gaussian 2px width noise; fixed pose; no detector or reference-size bias"
+  }
+}

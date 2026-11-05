@@ -1,0 +1,93 @@
+{
+  "n": {
+    "bus": {
+      "frame_counts": [
+        0,
+        0,
+        3
+      ],
+      "classes": [
+        "person",
+        "person",
+        "person"
+      ],
+      "inference_ms": 100.07
+    },
+    "zidane": {
+      "frame_counts": [
+        0,
+        0,
+        2
+      ],
+      "classes": [
+        "person",
+        "person"
+      ],
+      "inference_ms": 97.87
+    },
+    "constant_wall": {
+      "frame_counts": [
+        0,
+        0,
+        0
+      ],
+      "classes": [],
+      "inference_ms": 82.32
+    },
+    "brick_pattern": {
+      "frame_counts": [
+        0,
+        0,
+        0
+      ],
+      "classes": [],
+      "inference_ms": 92.31
+    }
+  },
+  "s": {
+    "bus": {
+      "frame_counts": [
+        0,
+        0,
+        4
+      ],
+      "classes": [
+        "person",
+        "person",
+        "person",
+        "person"
+      ],
+      "inference_ms": 195.37
+    },
+    "zidane": {
+      "frame_counts": [
+        0,
+        0,
+        2
+      ],
+      "classes": [
+        "person",
+        "person"
+      ],
+      "inference_ms": 255.85
+    },
+    "constant_wall": {
+      "frame_counts": [
+        0,
+        0,
+        0
+      ],
+      "classes": [],
+      "inference_ms": 208.49
+    },
+    "brick_pattern": {
+      "frame_counts": [
+        0,
+        0,
+        0
+      ],
+      "classes": [],
+      "inference_ms": 216.79
+    }
+  }
+}

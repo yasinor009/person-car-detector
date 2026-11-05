@@ -1,0 +1,6 @@
+[
+  {"name":"legacy11n_640","model":"models/person_car_yolo11n.onnx","backend":"legacy","imgsz":640},
+  {"name":"laptop26n_640","model":"models/person_car_yolo26n.onnx","backend":"laptop","imgsz":640},
+  {"name":"laptop26s_960","model":"models/person_car_yolo26s.onnx","backend":"laptop","imgsz":960},
+  {"name":"aerial11s_1280","model":"models/visdrone11s_1280.onnx","backend":"laptop","imgsz":1280}
+]
